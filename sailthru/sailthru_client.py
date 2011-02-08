@@ -268,6 +268,14 @@ class SailthruClient:
         data['schedule_time'] = ''
         return self._api_post('blast', data)
 
+    def get_template(self, template_name):
+        return self._api_get('template', {'template': template})
+
+    def save_template(self, template, template_fields = {}):
+        data = template_fields
+        data['template'] = template
+        return self._api_post('template', data)
+
     def _api_get(self, action, data):
         """
         Perform an HTTP GET request, using the shared-secret auth hash.
