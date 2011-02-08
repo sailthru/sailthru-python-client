@@ -135,9 +135,28 @@ class SailthruClient:
     def get_email(self, email):
         """
         get user email data
+        http://docs.sailthru.com/api/email
         """
         data = {'email': email}
         return self._api_request('email', data, 'GET')
+
+    def set_email(self, email, _vars={}, lists=[], templates=[], verified=0, optout=None, send=None, send_vars=[]):
+        """
+        Update information about one of your users, including adding and removing the user from lists.
+        http://docs.sailthru.com/api/email
+        """
+        data = {}
+        data['email'] = email
+        data['vars'] = _vars
+        data['lists'] = lists
+        data['templates'] = templates
+        data['verified'] = int(verified)
+        if optout is not None:
+            data['optout'] = optout
+        if send is not None:
+            data['send'] = send
+        data['send_vars'] = send_vars
+        return self._api_post('email', data)
 
     def _api_get(self, action, data):
         """
