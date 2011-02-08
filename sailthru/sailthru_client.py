@@ -276,6 +276,36 @@ class SailthruClient:
         data['template'] = template
         return self._api_post('template', data)
 
+    def get_list(self, list, format='txt'):
+        """
+        Download a list. Obviously, this can potentially be a very large download.
+        'txt' is default format since, its more compact as compare to others
+        http://docs.sailthru.com/api/list
+        """
+        data = {}
+        data['list'] = list
+        data['format'] = format
+        return self._api_get('list', data)
+
+    def save_list(self, list, emails):
+        """
+        Upload a list. The list import job is queued and will happen shortly after the API request.
+        http://docs.sailthru.com/api/list
+        @param list: list name
+        @param emails: List of email values or comma separated string
+        """
+        data = {}
+        data['list'] = list
+        data['emails'] = ','.join(emails) if emails is list else emails
+        return self._api_post('list', data)
+
+    def delete_list(self, list):
+        """
+        delete given list
+        http://docs.sailthru.com/api/list
+        """
+        return self._api_delete('list', {'list': list})
+
     def _api_get(self, action, data):
         """
         Perform an HTTP GET request, using the shared-secret auth hash.
