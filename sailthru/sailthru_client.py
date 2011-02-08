@@ -158,6 +158,116 @@ class SailthruClient:
         data['send_vars'] = send_vars
         return self._api_post('email', data)
 
+    def schedule_blast(self, name, list, schedule_time, from_name, from_email, subject, content_html, content_text, options={}):
+        """
+        Schedule a mass mail blast
+        http://docs.sailthru.com/api/blast
+        @param name: name to give to this new blast
+        @param list: mailing list name to send to
+        @param schedule_time:  when the blast should send. Dates in the past will be scheduled for immediate delivery. Any English textual datetime format known to PHP's strtotime function is acceptable, such as 2009-03-18 23:57:22 UTC, now (immediate delivery), +3 hours (3 hours from now), or February 14, 9:30 EST. Be sure to specify a timezone if you use an exact time.
+        @param from_name: name appearing in the "From" of the email
+        @param from_email: email address to use as the "from" – choose from any of your verified emails
+        @param subject: subject line of the email
+        @param content_html: HTML format version of the email
+        @param content_text: Text format version of the email
+        @param options: optional parameters dictionary
+            blast_id
+            copy_blast
+            copy_template
+            replyto
+            report_email
+            is_link_tracking
+            is_google_analytics
+            is_public
+            suppress_list
+            test_vars
+            email_hour_range
+            abtest
+            test_percent
+            data_feed_url
+        """
+        data = options
+        data['name'] = name
+        data['list'] = list
+        data['schedule_time'] = schedule_time
+        data['from_name'] = from_name
+        data['from_email'] = from_email
+        data['subject'] = subject
+        data['content_html'] = content_html
+        data['content_text'] = content_text
+        return self._api_post('blast', data)
+
+    def update_blast(self, blast_id, name=None, list=None, schedule_time=None, from_name=None, from_email=None, subject=None, content_html=None, content_text=None, options={}):
+        """
+        updates existing blast
+        http://docs.sailthru.com/api/blast
+        @param blast_id: blast id
+        @param name: name of the blast
+        @param list: blast list
+        @param schedule_time: new schedule time
+        @param from_name: name appearing in the "From" of the email
+        @param from_email: email address to use as the "from" – choose from any of your verified emails
+        @param subject: subject line of the email
+        @param content_html: HTML format version of the email
+        @param content_text: Text format version of the email
+        @param options: optional parameters dictionary
+            blast_id
+            copy_blast
+            copy_template
+            replyto
+            report_email
+            is_link_tracking
+            is_google_analytics
+            is_public
+            suppress_list
+            test_vars
+            email_hour_range
+            abtest
+            test_percent
+            data_feed_url
+        """
+        data = options
+        data['blast_id'] = blast_id
+        if name is not None:
+            data['name'] = name
+        if list is not None:
+            data['list'] = list
+        if schedule_time is not None:
+            data['schedule_time'] = schedule_time
+        if from_name is not None:
+            data['from_name'] = from_name
+        if from_email is not None:
+            data['from_email'] = from_email
+        if subject is not None:
+            data['subject'] = subject
+        if content_html is not None:
+            data['content_html'] = content_html
+        if content_text is not None:
+            data['content_text'] = content_text
+        return self._api_post('blast', data)
+
+    def get_blast(self, blast_id):
+        """
+        Get Blast information
+        http://docs.sailthru.com/api/blast
+        """
+        return self._api_get('blast', {'blast_id': blast_id})
+
+    def delete_blast(self, blast_id):
+        """
+        delete existing blast
+        """
+        return self._api_delete('blast', {'blast_id': blast_id})
+
+    def cancel_blast(self, blast_id):
+        """
+        Cancel a scheduled Blast
+        """
+        data = {}
+        data['blast_id'] = blast_id
+        data['schedule_time'] = ''
+        return self._api_post('blast', data)
+
     def _api_get(self, action, data):
         """
         Perform an HTTP GET request, using the shared-secret auth hash.
