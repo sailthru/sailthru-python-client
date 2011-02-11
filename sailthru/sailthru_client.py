@@ -367,6 +367,15 @@ class SailthruClient:
             data['when'] = when
         return self._api_post('alert', data)
 
+    def delete_alert(self, email, alert_id):
+        """
+        delete user alert
+        """
+        data = {}
+        data['email'] = email
+        data['alert_id'] = alert_id
+        return self._api_delete('alert', data)
+
     def _api_get(self, action, data):
         """
         Perform an HTTP GET request, using the shared-secret auth hash.
