@@ -287,6 +287,13 @@ class SailthruClient:
         data['format'] = format
         return self._api_get('list', data)
 
+    def get_lists(self):
+        """
+        Get metadata for all lists
+        """
+        data = {'list': ''} #blank list
+        return self._api_get('list', data)
+
     def save_list(self, list, emails):
         """
         Upload a list. The list import job is queued and will happen shortly after the API request.
