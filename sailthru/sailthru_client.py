@@ -2,6 +2,7 @@
 
 import hashlib
 import urllib, urllib2
+import string
 
 def flatten_nested_hash(hash_table):
     """
@@ -321,6 +322,37 @@ class SailthruClient:
         http://docs.sailthru.com/api/list
         """
         return self._api_delete('list', {'list': list})
+
+    def import_contacts(self, email, password, include_name=False):
+        """
+        Fetch email contacts from a user's address book on one of the major email websites. Currently supports AOL, Gmail, Hotmail, and Yahoo! Mail.
+        """
+        data = {}
+        data['email'] = email
+        data['password'] = password
+        if include_name == True:
+            data['names'] = 1
+        return self._api_post('contacts', data)
+
+    def push_content(self, title, url, date=None, tags=None, vars={}):
+        """
+        Push a new piece of content to Sailthru, triggering any applicable alerts.
+        @param title: title string for the content
+        @param url: URL string for the content
+        @param date: date string
+        @param tags: list or comma separated string values
+        @param vars: replaceable vars dictionary
+        """
+        data = {}
+        data['title'] = title
+        data['url'] = url
+        if date is not None:
+            data['date'] = date
+        if tags is not None:
+            data['tags'] = ",".join(tags) if type(tags) is list else tags
+        if len(vars) > 0:
+            data['vars'] = vars
+        return self._api_post('content', data)
 
     def _api_get(self, action, data):
         """
