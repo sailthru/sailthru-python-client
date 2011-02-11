@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import hashlib
 import urllib, urllib2
 
@@ -46,10 +48,7 @@ def get_signature_string(params, secret):
     str_list = []
     for item in extract_params(params):
         str_list.append(str(item))
-    print str_list
     str_list.sort()
-    print str_list
-    print "".join(str_list)
     return secret + "".join(str_list)
 
 def get_signature_hash(params, secret):
@@ -269,7 +268,17 @@ class SailthruClient:
         return self._api_post('blast', data)
 
     def get_template(self, template_name):
-        return self._api_get('template', {'template': template})
+        """
+        get information of a given template
+        """
+        return self._api_get('template', {'template': template_name})
+
+    def get_templates(self):
+        """
+        get metadata for all user templates
+        """
+        data = {'template': ''}
+        return self._api_get('template', data)
 
     def save_template(self, template, template_fields = {}):
         data = template_fields
