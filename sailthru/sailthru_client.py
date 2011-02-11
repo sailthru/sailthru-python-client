@@ -1,30 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import hashlib
-import urllib, urllib2
-import string
-
-def flatten_nested_hash(hash_table):
-    """
-    Flatten nested dictionary for GET / POST / DELETE API request
-    """
-    def flatten(hash_table, brackets=True):
-        f = {}
-        for key,value in hash_table.items():
-            _key = '[' + str(key) + ']' if (brackets == True) else str(key)
-            if type(value) is dict:
-                for k,v in flatten(value).items():
-                    f[_key + k] = v
-            elif type(value) is list:
-                temp_hash = {}
-                for i,v in enumerate(value):
-                    temp_hash[str(i)] = v
-                for k,v in flatten(temp_hash).items():
-                    f[ _key + k] = v
-            else:
-                f[_key] = value
-        return f
-    return flatten(hash_table, False)
+from sailthru_http import sailthru_http_request
 
 def extract_params(params):
     """
@@ -424,25 +401,4 @@ class SailthruClient:
         return self._http_request(self.api_url+'/'+action, data, request_type)
 
     def _http_request(self, url, data, method='POST'):
-        """
-        Perform an HTTP GET / POST / DELETE request
-        """
-        data = flatten_nested_hash(data)
-        data = urllib.urlencode(data, True)
-        opener = urllib2.build_opener(urllib2.HTTPHandler)
-        try:
-            if method == 'POST':
-                req = urllib2.Request(url, data)
-            else:
-                url += '?' + data
-                req = urllib2.Request(url)
-            req.add_header('User-Agent', self.user_agent)
-            req.get_method = lambda: method
-            response = opener.open(req)
-            response_data = response.read()
-            response.close()
-            return response_data
-        except urllib2.URLError, e:
-            return str(e)
-        except urllib2.HTTPError, e:
-            return e.read()
+        return sailthru_http_request(url, data, method)
