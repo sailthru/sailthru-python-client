@@ -37,6 +37,29 @@ def get_signature_hash(params, secret):
     """
     return hashlib.md5(get_signature_string(params, secret)).hexdigest()
 
+def verify_purchase_items(items):
+    """
+    check if the purchase items has all required keys
+    """
+    success = True
+    if (type(items) is list) and len(items) > 0:
+        required_item_fields = ['id', 'price', 'qty', 'title', 'url']   #order needs to be maintained
+        for item in items:
+            if type(item) is dict:
+                item_keys = item.keys()
+                item_keys.sort()
+                if item_keys != required_item_fields:
+                    success = False
+                    break
+            else:
+                success = False
+                break
+    else:
+        success = False
+
+    return success
+
+
 
 class SailthruClient:
 
@@ -375,6 +398,63 @@ class SailthruClient:
         data['email'] = email
         data['alert_id'] = alert_id
         return self._api_delete('alert', data)
+
+    def purchase(self, email, items={}, incomplete=None, message_id=None, verify_purchase_items=True):
+        """
+        Record that a user has made a purchase, or has added items to their purchase total.
+        http://docs.sailthru.com/api/purchase
+        @param email: Email string
+        @param items: list of item dictionary with keys: id, title, price, qty, and url
+        @param message_id: message_id string
+        @param verify_purchase_items:if True, call verify_purchase_items before making request to the Sailthru Server
+        """
+        data = {}
+        data['email'] = email
+        data['items'] = items
+        if incomplete is not None:
+            data['incomplete'] = incomplete
+        if message_id is not None:
+            data['incomplete'] = message_id
+        if verify_purchase_items == True:
+            if verify_purchase_items(items) == True:
+                return self._api_post('purchase', data)
+            else:
+                return False
+        return self._api_post('purchase', data)
+
+    def stats_list(self, list=None, date=None):
+        """
+        Retrieve information about your subscriber counts on a particular list, on a particular day.
+        http://docs.sailthru.com/api/stat
+        """
+        data = {}
+        if list is not None:
+            data['list'] = list
+        if date is not None:
+            data['date'] = date
+        data['stat'] = 'list'
+        return self._stats(data)
+
+    def stats_blast(self, blast_id=None, start_date=None, end_date=None, options={}):
+        """
+        Retrieve information about a particular blast or aggregated information from all of blasts over a specified date range.
+        http://docs.sailthru.com/api/stat
+        """
+        data = options
+        if blast_id is not None:
+            data['blast_id'] = blast_id
+        if start_date is not None:
+            data['start_date'] = start_date
+        if end_date is not None:
+            data['end_date'] = end_date
+        data['stats'] = 'blast'
+        return self._stats(data)
+
+    def _stats(self, data):
+        """
+        Make Stats API Request
+        """
+        return self._api_get('stats', data)
 
     def _api_get(self, action, data):
         """
