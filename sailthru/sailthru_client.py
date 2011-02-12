@@ -450,6 +450,26 @@ class SailthruClient:
         data['stats'] = 'blast'
         return self._stats(data)
 
+    def get_horizon(self, email, hid_only=False):
+        """
+        Get horizon user data
+        http://docs.sailthru.com/api/horizon
+        """
+        data = {'email': email}
+        if hid_only == True:
+            data['hid_only'] = 1
+        return self._api_get('horizon', data)
+
+    def set_horizon(self, email, tags=None):
+        """
+        Set horizon user data
+        http://docs.sailthru.com/api/horizon
+        """
+        data = {'email': email}
+        if tags is not None:
+            data['tag'] = ','.join(tags) if type(tags) is list else tags
+        return self._api_post('horizon', data)
+
     def _stats(self, data):
         """
         Make Stats API Request
