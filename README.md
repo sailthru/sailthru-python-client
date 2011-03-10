@@ -19,3 +19,4 @@ It can make requests to following [API calls](http://docs.sailthru.com/api):
 * [purchase](http://docs.sailthru.com/api/purchase)
 * [horizon](http://docs.sailthru.com/api/horizon)
 
+For usage examples, you can take a look at [Ruby](https://github.com/sailthru/sailthru-ruby-client/blob/master/README.md) and [PHP](https://github.com/sailthru/sailthru-php5-client/blob/master/README.md) examples
