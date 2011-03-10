@@ -100,7 +100,7 @@ class SailthruClient:
         data['options'] = options
         if schedule_time is not None:
             data['schedule_time'] = schedule_time
-        return self._api_post('send', data)
+        return self.api_post('send', data)
 
     def multi_send(self, template, emails, _vars = {}, evars = {}, options = {}):
         """
@@ -118,19 +118,19 @@ class SailthruClient:
         data['vars'] = _vars
         data['evars'] = evars
         data['options'] = options
-        return self._api_post('send', data)
+        return self.api_post('send', data)
 
     def get_send(self, send_id):
         """
         Get the status of a send
         """
-        return self._api_get('send', {'send_id': send_id})
+        return self.api_get('send', {'send_id': send_id})
 
     def cancel_send(self, send_id):
         """
         Cancels an email that you had previously scheduled for future sending with the schedule_time parameter. It is not possible to cancel an email that has not been scheduled.
         """
-        return self._api_delete('send', {'send_id': send_id})
+        return self.api_delete('send', {'send_id': send_id})
 
     def get_email(self, email):
         """
@@ -156,7 +156,7 @@ class SailthruClient:
         if send is not None:
             data['send'] = send
         data['send_vars'] = send_vars
-        return self._api_post('email', data)
+        return self.api_post('email', data)
 
     def schedule_blast(self, name, list, schedule_time, from_name, from_email, subject, content_html, content_text, options={}):
         """
@@ -195,7 +195,35 @@ class SailthruClient:
         data['subject'] = subject
         data['content_html'] = content_html
         data['content_text'] = content_text
-        return self._api_post('blast', data)
+        return self.api_post('blast', data)
+
+    def schedule_blast_from_template(self, template, list, schedule_time, options={}):
+        """
+        Schedule a mass mail blast from template
+        http://docs.sailthru.com/api/blast
+        @param template: template to copy from
+        @param list: List String
+        @param schedule_time
+        @param options: additional optional params
+        """
+        data = options
+        data['copy_template'] = template
+        data['list'] = list
+        data['schedule_time'] = schedule_time
+        return self.api_post('blast', data)
+
+    def schedule_blast_from_blast(self, blast_id, schedule_time, options={}):
+        """
+        Schedule a mass mail blast from previous blast
+        http://docs.sailthru.com/api/blast
+        @param blast_id: blast_id to copy from
+        @param schedule_time
+        @param options: additional optional params
+        """
+        data = options
+        data['copy_blast'] = blast_id
+        data['schedule_time'] = schedule_time
+        return self.api_post('blast', data)
 
     def update_blast(self, blast_id, name=None, list=None, schedule_time=None, from_name=None, from_email=None, subject=None, content_html=None, content_text=None, options={}):
         """
@@ -244,20 +272,20 @@ class SailthruClient:
             data['content_html'] = content_html
         if content_text is not None:
             data['content_text'] = content_text
-        return self._api_post('blast', data)
+        return self.api_post('blast', data)
 
     def get_blast(self, blast_id):
         """
         Get Blast information
         http://docs.sailthru.com/api/blast
         """
-        return self._api_get('blast', {'blast_id': blast_id})
+        return self.api_get('blast', {'blast_id': blast_id})
 
     def delete_blast(self, blast_id):
         """
         delete existing blast
         """
-        return self._api_delete('blast', {'blast_id': blast_id})
+        return self.api_delete('blast', {'blast_id': blast_id})
 
     def cancel_blast(self, blast_id):
         """
@@ -266,25 +294,25 @@ class SailthruClient:
         data = {}
         data['blast_id'] = blast_id
         data['schedule_time'] = ''
-        return self._api_post('blast', data)
+        return self.api_post('blast', data)
 
     def get_template(self, template_name):
         """
         get information of a given template
         """
-        return self._api_get('template', {'template': template_name})
+        return self.api_get('template', {'template': template_name})
 
     def get_templates(self):
         """
         get metadata for all user templates
         """
         data = {'template': ''}
-        return self._api_get('template', data)
+        return self.api_get('template', data)
 
     def save_template(self, template, template_fields = {}):
         data = template_fields
         data['template'] = template
-        return self._api_post('template', data)
+        return self.api_post('template', data)
 
     def get_list(self, list, format='txt'):
         """
@@ -295,14 +323,14 @@ class SailthruClient:
         data = {}
         data['list'] = list
         data['format'] = format
-        return self._api_get('list', data)
+        return self.api_get('list', data)
 
     def get_lists(self):
         """
         Get metadata for all lists
         """
         data = {'list': ''} #blank list
-        return self._api_get('list', data)
+        return self.api_get('list', data)
 
     def save_list(self, list, emails):
         """
@@ -314,14 +342,14 @@ class SailthruClient:
         data = {}
         data['list'] = list
         data['emails'] = ','.join(emails) if emails is list else emails
-        return self._api_post('list', data)
+        return self.api_post('list', data)
 
     def delete_list(self, list):
         """
         delete given list
         http://docs.sailthru.com/api/list
         """
-        return self._api_delete('list', {'list': list})
+        return self.api_delete('list', {'list': list})
 
     def import_contacts(self, email, password, include_name=False):
         """
@@ -332,7 +360,7 @@ class SailthruClient:
         data['password'] = password
         if include_name == True:
             data['names'] = 1
-        return self._api_post('contacts', data)
+        return self.api_post('contacts', data)
 
     def push_content(self, title, url, date=None, tags=None, vars={}):
         """
@@ -352,13 +380,13 @@ class SailthruClient:
             data['tags'] = ",".join(tags) if type(tags) is list else tags
         if len(vars) > 0:
             data['vars'] = vars
-        return self._api_post('content', data)
+        return self.api_post('content', data)
 
     def get_alert(self, email):
         """
         Retrieve a user's alert settings.
         """
-        return self._api_get('alert', {'email': email})
+        return self.api_get('alert', {'email': email})
 
     def save_alert(self, email, type, template, when=None, options={}):
         """
@@ -388,7 +416,7 @@ class SailthruClient:
         data['template'] = template
         if (type == 'weekly' or type == 'daily'):
             data['when'] = when
-        return self._api_post('alert', data)
+        return self.api_post('alert', data)
 
     def delete_alert(self, email, alert_id):
         """
@@ -397,7 +425,7 @@ class SailthruClient:
         data = {}
         data['email'] = email
         data['alert_id'] = alert_id
-        return self._api_delete('alert', data)
+        return self.api_delete('alert', data)
 
     def purchase(self, email, items={}, incomplete=None, message_id=None, verify_purchase_items=True):
         """
@@ -417,10 +445,10 @@ class SailthruClient:
             data['incomplete'] = message_id
         if verify_purchase_items == True:
             if verify_purchase_items(items) == True:
-                return self._api_post('purchase', data)
+                return self.api_post('purchase', data)
             else:
                 return False
-        return self._api_post('purchase', data)
+        return self.api_post('purchase', data)
 
     def stats_list(self, list=None, date=None):
         """
@@ -458,7 +486,7 @@ class SailthruClient:
         data = {'email': email}
         if hid_only == True:
             data['hid_only'] = 1
-        return self._api_get('horizon', data)
+        return self.api_get('horizon', data)
 
     def set_horizon(self, email, tags=None):
         """
@@ -468,15 +496,15 @@ class SailthruClient:
         data = {'email': email}
         if tags is not None:
             data['tag'] = ','.join(tags) if type(tags) is list else tags
-        return self._api_post('horizon', data)
+        return self.api_post('horizon', data)
 
     def _stats(self, data):
         """
         Make Stats API Request
         """
-        return self._api_get('stats', data)
+        return self.api_get('stats', data)
 
-    def _api_get(self, action, data):
+    def api_get(self, action, data):
         """
         Perform an HTTP GET request, using the shared-secret auth hash.
         @param action: API action call
@@ -484,7 +512,7 @@ class SailthruClient:
         """
         return self._api_request(action, data, 'GET')
 
-    def _api_post(self, action, data):
+    def api_post(self, action, data):
         """
         Perform an HTTP POST request, using the shared-secret auth hash.
         @param action: API action call
@@ -492,7 +520,7 @@ class SailthruClient:
         """
         return self._api_request(action, data, 'POST')
 
-    def _api_delete(self, action, data):
+    def api_delete(self, action, data):
         """
         Perform an HTTP DELETE request, using the shared-secret auth hash.
         @param action: API action call
