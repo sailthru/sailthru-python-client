@@ -308,6 +308,13 @@ class SailthruClient:
         """
         data = {'template': ''}
         return self.api_get('template', data)
+    
+    def delete_template(self, template_name):
+        """
+        delete existing template
+        """
+        data = {'template': template_name}
+        return self.api_delete('template', data)
 
     def save_template(self, template, template_fields = {}):
         data = template_fields
