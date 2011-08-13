@@ -2,7 +2,7 @@ from setuptools import setup
 
 version = '1.0.0'
 
-setup(name='sailthru-python-client', 
+setup(name='sailthru-client', 
         version=version,
         description='Python client for Sailthru API',
         long_description=open('./README.md').read(),
