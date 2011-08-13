@@ -41,7 +41,7 @@ def sailthru_http_request(url, data, method):
         response_data = response.read()
         response.close()
         return response_data
-    except urllib2.URLError, e:
-        return str(e)
     except urllib2.HTTPError, e:
         return e.read()
+    except urllib2.URLError, e:
+        return str(e)
