@@ -20,3 +20,16 @@ It can make requests to following [API calls](http://docs.sailthru.com/api):
 * [horizon](http://docs.sailthru.com/api/horizon)
 
 For usage examples, you can take a look at [Ruby](https://github.com/sailthru/sailthru-ruby-client/blob/master/README.md) and [PHP](https://github.com/sailthru/sailthru-php5-client/blob/master/README.md) examples
+
+### Installation (Tested with Python 2.7.x)
+    pip install -e git://github.com/sailthru/sailthru-python-client.git#egg=sailthru-client
+
+Examples
+--------
+    from sailthru import *
+    
+    api_key = '*******'
+    api_secret = '*******'
+    sailthru_client = SailthruClient(api_key, api_secret)
+    response = sailthru_client.get_email('eli@sailthru.com')
+    
