@@ -482,7 +482,7 @@ class SailthruClient:
             data['start_date'] = start_date
         if end_date is not None:
             data['end_date'] = end_date
-        data['stats'] = 'blast'
+        data['stat'] = 'blast'
         return self._stats(data)
 
     def get_horizon(self, email, hid_only=False):
