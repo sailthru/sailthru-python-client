@@ -434,7 +434,7 @@ class SailthruClient:
         data['alert_id'] = alert_id
         return self.api_delete('alert', data)
 
-    def purchase(self, email, items={}, incomplete=None, message_id=None, verify_purchase_items=True):
+    def purchase(self, email, items={}, incomplete=None, message_id=None, options={}):
         """
         Record that a user has made a purchase, or has added items to their purchase total.
         http://docs.sailthru.com/api/purchase
@@ -443,18 +443,14 @@ class SailthruClient:
         @param message_id: message_id string
         @param verify_purchase_items:if True, call verify_purchase_items before making request to the Sailthru Server
         """
-        data = {}
+        data = options
         data['email'] = email
         data['items'] = items
         if incomplete is not None:
             data['incomplete'] = incomplete
         if message_id is not None:
-            data['incomplete'] = message_id
-        if verify_purchase_items == True:
-            if verify_purchase_items(items) == True:
-                return self.api_post('purchase', data)
-            else:
-                return False
+            data['message_id'] = message_id
+
         return self.api_post('purchase', data)
 
     def stats_list(self, list=None, date=None):
