@@ -1,4 +1,4 @@
-import urllib2, urllib
+import requests
 
 def flatten_nested_hash(hash_table):
     """
@@ -22,26 +22,23 @@ def flatten_nested_hash(hash_table):
         return f
     return flatten(hash_table, False)
 
-def sailthru_http_request(url, data, method):
-    """
-    Perform an HTTP GET / POST / DELETE request
-    """
-    data = flatten_nested_hash(data)
-    data = urllib.urlencode(data, True)
-    opener = urllib2.build_opener(urllib2.HTTPHandler)
-    try:
-        if method == 'POST':
-            req = urllib2.Request(url, data)
-        else:
-            url += '?' + data
-            req = urllib2.Request(url)
-        req.add_header('User-Agent', 'Sailthru API Python Client')
-        req.get_method = lambda: method
-        response = opener.open(req)
-        response_data = response.read()
-        response.close()
-        return response_data
-    except urllib2.HTTPError, e:
-        return e.read()
-    except urllib2.URLError, e:
-        return str(e)
+def sailthru_http_request(url, data, method, file_data = None):
+	"""
+	Perform an HTTP GET / POST / DELETE request
+	"""
+	files = {}
+	data = flatten_nested_hash(data)
+	try:
+		if file_data is not None:
+			files = file_data
+		headers = { 'User-Agent': 'Sailthru API Python Client' }
+		response = requests.request(method, url, data, None, headers, None, files)
+		if (response.status_code == requests.codes.ok):
+			return response.content
+		else:
+			response.raise_for_status()
+			return response
+	except requests.HTTPError, e:
+		return str(e)
+	except requests.RequestException, e:
+		return str(e)
