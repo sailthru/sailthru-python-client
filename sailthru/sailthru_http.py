@@ -37,9 +37,8 @@ def sailthru_http_request(url, data, method, file_data = None):
     try:
 	headers = { 'User-Agent': 'Sailthru API Python Client' }
 	response = requests.request(method, url, data, data, headers, None, file_data)
-        #if response.ok == False:
-        #    print 'xxx'
-        #    raise SailthruClientError(response.error)
+        if response.status_code is None:
+            raise SailthruClientError(response.error)
         return SailthruResponse(response)
     except requests.HTTPError, e:
 	raise SailthruClientError(str(e))
