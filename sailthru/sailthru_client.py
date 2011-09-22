@@ -56,7 +56,6 @@ class SailthruClient:
         self.api_key = api_key
         self.secret = secret
         self.api_url = api_url if (api_url is not None) else 'https://api.sailthru.com'
-        self.user_agent = 'Sailthru API Python Client'
 
     def send(self, template, email, _vars = {}, options = {}, schedule_time = None):
         """
@@ -560,7 +559,7 @@ class SailthruClient:
         @param action: API action call
         @param data: dictionary values
         """
-        return self._api_request(action, data, 'GET')
+        return self._api_request(action, data, 'get')
 
     def api_post(self, action, data, file_data = None):
         """
@@ -568,7 +567,7 @@ class SailthruClient:
         @param action: API action call
         @param data: dictionary values
         """
-        return self._api_request(action, data, 'POST', file_data)
+        return self._api_request(action, data, 'post', file_data)
 
     def api_delete(self, action, data):
         """
@@ -576,7 +575,7 @@ class SailthruClient:
         @param action: API action call
         @param data: dictionary values
         """
-        return self._api_request(action, data, 'DELETE')
+        return self._api_request(action, data, 'delete')
 
     def _api_request(self, action, data, request_type, file_data = None):
         """
@@ -587,5 +586,5 @@ class SailthruClient:
         data['sig'] = get_signature_hash(data, self.secret)
         return self._http_request(self.api_url+'/'+action, data, request_type, file_data)
 
-    def _http_request(self, url, data, method='POST', file_data = None):
+    def _http_request(self, url, data, method, file_data = None):
         return sailthru_http_request(url, data, method, file_data)
