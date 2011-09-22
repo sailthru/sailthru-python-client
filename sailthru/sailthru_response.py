@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import ast
 try: 
     import simplejson as json
 except ImportError: 
