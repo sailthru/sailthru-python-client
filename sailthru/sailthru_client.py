@@ -37,28 +37,6 @@ def get_signature_hash(params, secret):
     """
     return hashlib.md5(get_signature_string(params, secret)).hexdigest()
 
-def verify_purchase_items(items):
-    """
-    check if the purchase items has all required keys
-    """
-    success = True
-    if (type(items) is list) and len(items) > 0:
-        required_item_fields = ['id', 'price', 'qty', 'title', 'url']   #order needs to be maintained
-        for item in items:
-            if type(item) is dict:
-                item_keys = item.keys()
-                item_keys.sort()
-                if item_keys != required_item_fields:
-                    success = False
-                    break
-            else:
-                success = False
-                break
-    else:
-        success = False
-
-    return success
-
 class SailthruClient:
     """
     This class makes HTTP Request to Sailthru API server
@@ -438,7 +416,7 @@ class SailthruClient:
         @param email: Email string
         @param items: list of item dictionary with keys: id, title, price, qty, and url
         @param message_id: message_id string
-        @param verify_purchase_items:if True, call verify_purchase_items before making request to the Sailthru Server
+        @param options: optional purchase params
         """
         data = options
         data['email'] = email
