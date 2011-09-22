@@ -21,7 +21,7 @@ class SailthruResponse:
 
 class SailthruResponseError:
     def __init__(self, sailthru_response):
-        self.response_dict = ast.literal_eval(sailthru_response.get_body())
+        self.response_dict = sailthru_response.get_body()
 
     def get_message(self):
         try:
