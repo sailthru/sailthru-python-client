@@ -28,11 +28,27 @@ For usage examples, you can take a look at [Ruby](https://github.com/sailthru/sa
 
 Examples
 --------
-    from sailthru import *
-    
+    from sailthru.sailthru_client import SailthruClient
+    from sailthru.sailthru_response import SailthruResponseError
+    from sailthru.sailthru_error import SailthruClientError
+
     api_key = '*******'
     api_secret = '*******'
     sailthru_client = SailthruClient(api_key, api_secret)
-    response = sailthru_client.get_email('eli@sailthru.com')
+
+try:
+    response = sailthru_client.set_email('praj@sailthru.com')
+    #response = sailthru_client.delete_template('from-python')
+    #response = sailthru_client.get_alert('praj@infynyxx.com')
     
+    body = response.get_body()
+    if response.is_ok():
+        print body
+    else:
+        error = SailthruResponseError(response)
+        print error.get_message()
+        print response.get_status_code()
+
+except SailthruClientError, e:
+    print("Exception: " + str(e))
     
