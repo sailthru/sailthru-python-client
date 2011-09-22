@@ -33,10 +33,8 @@ def sailthru_http_request(url, data, method, file_data = None):
     files = {}
     data = flatten_nested_hash(data)
     try:
-	if file_data is not None:
-	    files = file_data
 	headers = { 'User-Agent': 'Sailthru API Python Client' }
-	response = requests.request(method, url, data, None, headers, None, files)
+	response = requests.request(method, url, data, None, headers, None, file_data)
         return SailthruResponse(response)
 	if (response.status_code == requests.codes.ok):
 	    return response.content
