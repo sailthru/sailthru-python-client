@@ -559,7 +559,7 @@ class SailthruClient:
         @param action: API action call
         @param data: dictionary values
         """
-        return self._api_request(action, data, 'get')
+        return self._api_request(action, data, 'GET')
 
     def api_post(self, action, data, file_data = None):
         """
@@ -567,7 +567,7 @@ class SailthruClient:
         @param action: API action call
         @param data: dictionary values
         """
-        return self._api_request(action, data, 'post', file_data)
+        return self._api_request(action, data, 'POST', file_data)
 
     def api_delete(self, action, data):
         """
@@ -575,7 +575,7 @@ class SailthruClient:
         @param action: API action call
         @param data: dictionary values
         """
-        return self._api_request(action, data, 'delete')
+        return self._api_request(action, data, 'DELETE')
 
     def _api_request(self, action, data, request_type, file_data = None):
         """
