@@ -32,15 +32,15 @@ def sailthru_http_request(url, data, method, file_data = None):
     """
     files = {}
     data = flatten_nested_hash(data)
+    params = data if method != 'post' else None
+    body = data if method == 'post' else None
     try:
 	headers = { 'User-Agent': 'Sailthru API Python Client' }
-	response = requests.request(method, url, data, None, headers, None, file_data)
+	response = requests.request(method, url, data, data, headers, None, file_data)
+        #if response.ok == False:
+        #    print 'xxx'
+        #    raise SailthruClientError(response.error)
         return SailthruResponse(response)
-	if (response.status_code == requests.codes.ok):
-	    return response.content
-	else:
-	    response.raise_for_status()
-	    return response
     except requests.HTTPError, e:
 	raise SailthruClientError(str(e))
     except requests.RequestException, e:

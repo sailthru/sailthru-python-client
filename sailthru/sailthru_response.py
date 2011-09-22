@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import ast
+try: 
+    import simplejson as json
+except ImportError: 
+    import json
 
 class SailthruResponse:
     def __init__(self, response):
@@ -11,7 +15,10 @@ class SailthruResponse:
 
     def get_body(self, as_dictionary = True):
         content = self.response.content
-        return ast.literal_eval(content) if as_dictionary == True else content
+        if as_dictionary == True:
+            return json.loads(content)
+        else:
+            return content
 
     def get_response(self):
         return self.response
