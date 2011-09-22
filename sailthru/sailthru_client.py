@@ -504,77 +504,77 @@ class SailthruClient:
         """
         return self.api_get('stats', data)
 
-	def _process_job(self, job, options = {}, report_email = None, postback_url = None, file_data = None):
-		"""
-		Interface for making request to job call
-		@param job: string
-		@param options: dictionary
-		@param report_email: string
-		@param postback_url: string
-		@param file_data: string
-		"""
-		data = options
-		data['job'] = job
-		if report_email is not None:
-			data['report_email'] = report_email
-		if postback_url is not None:
-			data['postback_url'] = postback_url
-		return self.api_post(job, data, file_data)
+    def _process_job(self, job, options = {}, report_email = None, postback_url = None, file_data = None):
+	"""
+	Interface for making request to job call
+	@param job: string
+	@param options: dictionary
+        @param report_email: string
+	@param postback_url: string
+	@param file_data: string
+	"""
+	data = options
+	data['job'] = job
+	if report_email is not None:
+	    data['report_email'] = report_email
+	if postback_url is not None:
+	    data['postback_url'] = postback_url
+	return self.api_post(job, data, file_data)
 
-	def process_import_job(self, job_list, emails, report_email = None, postback_url = None): 
-		"""
-		Process job from email string input in CSV
-		@param job_list: list
-		@param emails: emails
-		@param report_email: string
-		@param postback_url: string
-		"""
-		data = {}
-		data['list'] = job_list
-		data['emails'] = emails
-		return self._process_job('import', data, report_email, postback_url)
+    def process_import_job(self, job_list, emails, report_email = None, postback_url = None): 
+	"""
+	Process job from email string input in CSV
+	@param job_list: list
+	@param emails: emails
+	@param report_email: string
+	@param postback_url: string
+	"""
+	data = {}
+	data['list'] = job_list
+	data['emails'] = emails
+	return self._process_job('import', data, report_email, postback_url)
 
-	def process_import_job_from_file(self, job_list, file_path, report_email = None, postback_url = None):
-		"""
-		Process job from an input file
-		@param job_list: list
-		@param file_path: string
-		@param report_email: string
-		@param postback_url: string
-		"""
-		data = {}
-		data['list'] = job_list
-		data['file'] = file_path
-		return self._process_job('import', data, report_email, postback_url, data['file'])
+    def process_import_job_from_file(self, job_list, file_path, report_email = None, postback_url = None):
+	"""
+	Process job from an input file
+	@param job_list: list
+	@param file_path: string
+	@param report_email: string
+	@param postback_url: string
+	"""
+	data = {}
+	data['list'] = job_list
+	data['file'] = file_path
+        return self._process_job('import', data, report_email, postback_url, data['file'])
 
-	def process_snapshot_job(self, query = {}, report_email = None, postback_url = None):
-		"""
-		Implementation for a snapshot job
-		@param query: dictionary
-		@param report_email: string
-		@param postback_url: string
-		"""
-		data = {}
-		data['query'] = query
-		return self._process_job('snapshot', data, report_email, postback_url)
+    def process_snapshot_job(self, query = {}, report_email = None, postback_url = None):
+	"""
+	Implementation for a snapshot job
+	@param query: dictionary
+	@param report_email: string
+	@param postback_url: string
+	"""
+	data = {}
+	data['query'] = query
+	return self._process_job('snapshot', data, report_email, postback_url)
 
-	def process_export_list_job(self, job_list, report_email = None, postback_url = None):
-		"""
-		Implementation of export list job
-		@param job_list: list
-		@param report_email: string
-		@param postback_url: string
-		"""
-		data = {}
-		data['list'] = job_list
-		return self._process_job('export_list_data', data, report_email, postback_url)
+    def process_export_list_job(self, job_list, report_email = None, postback_url = None):
+	"""
+	Implementation of export list job
+	@param job_list: list
+	@param report_email: string
+	@param postback_url: string
+	"""
+	data = {}
+	data['list'] = job_list
+	return self._process_job('export_list_data', data, report_email, postback_url)
 
-	def get_job_status(self, job_id):
-		"""
-		Get status of a job
-		@param job_id:
-		"""
-		return self.api_get('job', {'job_id': job_id})
+    def get_job_status(self, job_id):
+	"""
+	Get status of a job
+	@param job_id:
+	"""
+	return self.api_get('job', {'job_id': job_id})
 
     def api_get(self, action, data):
         """
