@@ -36,19 +36,19 @@ Examples
     api_secret = '*******'
     sailthru_client = SailthruClient(api_key, api_secret)
 
-try:
-    response = sailthru_client.set_email('praj@sailthru.com')
-    #response = sailthru_client.delete_template('from-python')
-    #response = sailthru_client.get_alert('praj@infynyxx.com')
-    
-    body = response.get_body()
-    if response.is_ok():
-        print body
-    else:
-        error = SailthruResponseError(response)
-        print error.get_message()
-        print response.get_status_code()
+    try:
+        response = sailthru_client.set_email('praj@sailthru.com')
+        #response = sailthru_client.delete_template('from-python')
+        #response = sailthru_client.get_alert('praj@infynyxx.com')
+        
+        body = response.get_body()
+        if response.is_ok():
+            print body
+        else:
+            error = SailthruResponseError(response)
+            print error.get_message()
+            print response.get_status_code()
 
-except SailthruClientError, e:
-    print("Exception: " + str(e))
-    
+    except SailthruClientError, e:
+        print("Exception: " + str(e))
+
