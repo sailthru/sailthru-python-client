@@ -537,6 +537,7 @@ class SailthruClient:
         """
         data['api_key'] = self.api_key
         data['format'] = data.get('format', 'json')
+        data['sig'] = ''
         data['sig'] = get_signature_hash(data, self.secret)
         return self._http_request(self.api_url+'/'+action, data, request_type)
 
