@@ -8,13 +8,14 @@ def extract_params(params):
     Extracts the values of a set of parameters, recursing into nested dictionaries.
     """
     values = []
-    for key, value in params.items():
-        if type(value) == type(dict()):
+    if type(params) == type(dict()):
+        for key, value in params.items():
             values.extend(extract_params(value))
-        elif type(value) == type(list()):
-            values.extend(value)
-        else:
-            values.append(value)
+    elif type(params) == type(list()):
+        for value in params:
+            values.extend(extract_params(value))
+    else:
+        values.append(params)
     return values
 
 def get_signature_string(params, secret):
