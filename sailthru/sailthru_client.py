@@ -98,7 +98,7 @@ class SailthruClient:
         data['template'] = template
         data['email'] = email
         data['vars'] = _vars
-        data['options'] = options
+        data['options'] = options.copy()
         if schedule_time is not None:
             data['schedule_time'] = schedule_time
         return self.api_post('send', data)
@@ -116,9 +116,9 @@ class SailthruClient:
         data = {}
         data['template'] = template
         data['email'] = ','.join(emails) if type(emails) is list else emails
-        data['vars'] = _vars
-        data['evars'] = evars
-        data['options'] = options
+        data['vars'] = _vars.copy()
+        data['evars'] = evars.copy()
+        data['options'] = options.copy()
         return self.api_post('send', data)
 
     def get_send(self, send_id):
@@ -148,7 +148,7 @@ class SailthruClient:
         """
         data = {}
         data['email'] = email
-        data['vars'] = _vars
+        data['vars'] = _vars.copy()
         data['lists'] = lists
         data['templates'] = templates
         data['verified'] = int(verified)
@@ -187,7 +187,7 @@ class SailthruClient:
             test_percent
             data_feed_url
         """
-        data = options
+        data = options.copy()
         data['name'] = name
         data['list'] = list
         data['schedule_time'] = schedule_time
@@ -207,7 +207,7 @@ class SailthruClient:
         @param schedule_time
         @param options: additional optional params
         """
-        data = options
+        data = options.copy()
         data['copy_template'] = template
         data['list'] = list
         data['schedule_time'] = schedule_time
@@ -221,7 +221,7 @@ class SailthruClient:
         @param schedule_time
         @param options: additional optional params
         """
-        data = options
+        data = options.copy()
         data['copy_blast'] = blast_id
         data['schedule_time'] = schedule_time
         return self.api_post('blast', data)
@@ -255,7 +255,7 @@ class SailthruClient:
             test_percent
             data_feed_url
         """
-        data = options
+        data = options.copy()
         data['blast_id'] = blast_id
         if name is not None:
             data['name'] = name
@@ -318,7 +318,7 @@ class SailthruClient:
         return self.api_delete('template', data)
 
     def save_template(self, template, template_fields = {}):
-        data = template_fields
+        data = template_fields.copy()
         data['template'] = template
         return self.api_post('template', data)
 
@@ -387,7 +387,7 @@ class SailthruClient:
         if tags is not None:
             data['tags'] = ",".join(tags) if type(tags) is list else tags
         if len(vars) > 0:
-            data['vars'] = vars
+            data['vars'] = vars.copy()
         return self.api_post('content', data)
 
     def get_alert(self, email):
@@ -418,7 +418,7 @@ class SailthruClient:
         @param when: date string required for summary alert (daily/weekly)
         @param options: dictionary value for adding tags, max price, min price, match type
         """
-        data = options
+        data = options.copy()
         data['email'] = email
         data['type'] = type
         data['template'] = template
@@ -444,7 +444,7 @@ class SailthruClient:
         @param message_id: message_id string
         @param verify_purchase_items:if True, call verify_purchase_items before making request to the Sailthru Server
         """
-        data = options
+        data = options.copy()
         data['email'] = email
         data['items'] = items
         if incomplete is not None:
@@ -472,7 +472,7 @@ class SailthruClient:
         Retrieve information about a particular blast or aggregated information from all of blasts over a specified date range.
         http://docs.sailthru.com/api/stat
         """
-        data = options
+        data = options.copy()
         if blast_id is not None:
             data['blast_id'] = blast_id
         if start_date is not None:
