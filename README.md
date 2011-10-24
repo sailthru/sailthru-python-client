@@ -24,7 +24,7 @@ It can make requests to following [API calls](http://docs.sailthru.com/api):
 For usage examples, you can take a look at [Ruby](https://github.com/sailthru/sailthru-ruby-client/blob/master/README.md) and [PHP](https://github.com/sailthru/sailthru-php5-client/blob/master/README.md) examples
 
 ### Installation (Tested with Python 2.7.x)
-    pip install -e git://github.com/sailthru/sailthru-python-client.git#egg=sailthru-client
+    pip install git+https://github.com/sailthru/sailthru-python-client.git#egg=sailthru-client
 
 Examples
 --------
