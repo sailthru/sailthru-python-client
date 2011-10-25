@@ -3,6 +3,9 @@
 import hashlib
 from sailthru_http import sailthru_http_request
 
+try: import simplejson as json
+except ImportError: import json
+
 def extract_params(params):
     """
     Extracts the values of a set of parameters, recursing into nested dictionaries.
@@ -496,11 +499,18 @@ class SailthruClient:
         else:
             return False
 
+        if action != 'verify':
+            return False
+
         sig = post_params['sig']
         del post_params['sig']
 
-        send_response = self.api_send(post_params['send_id'])
-        if not 'email' in send_response:
+        send_response = self.get_send(post_params['send_id'])
+        try:
+            send_response = json.loads(send_response)
+            if not 'email' in send_response:
+                return False
+        except json.decoder.JSONDecodeError as json_err:
             return False
         
         if send_response['email'] != post_params['email']:
@@ -554,14 +564,22 @@ class SailthruClient:
         if 'send_id' in post_params:
             send_id = post_params['send_id']
             send_response = self.get_send(send_id)
-            if not 'email' in send_response:
+            try:
+                send_response = json.loads(send_response)
+                if not 'email' in send_response:
+                    return False
+            except json.decoder.JSONDecodeError as json_err:
                 return False
 
         # for blasts
         if 'blast_id' in post_params:
             blast_id = post_params['blast_id']
             blast_response = self.get_blast(blast_id)
-            if 'error' in blast_response:
+            try:
+                blast_response = json.loads(blast_response)
+                if 'error' in blast_response:
+                    return False
+            except json.decoder.JSONDecodeError as json_err:
                 return False
 
         return True
