@@ -25,6 +25,9 @@ For usage examples, you can take a look at [Ruby](https://github.com/sailthru/sa
 
 ### Installation (Tested with Python 2.7.x)
     pip install git+https://github.com/sailthru/sailthru-python-client.git#egg=sailthru-client
+    
+### Running tests
+    nosetests -v
 
 Examples
 --------
