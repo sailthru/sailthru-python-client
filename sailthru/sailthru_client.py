@@ -442,7 +442,7 @@ class SailthruClient:
         @param email: Email string
         @param items: list of item dictionary with keys: id, title, price, qty, and url
         @param message_id: message_id string
-        @param verify_purchase_items:if True, call verify_purchase_items before making request to the Sailthru Server
+        @param options
         """
         data = options.copy()
         data['email'] = email
@@ -512,11 +512,10 @@ class SailthruClient:
         """
         Returns true if the incoming request is an authenticated verify post.
         """
-        required_params = ['action', 'email', 'send_id', 'sig']
         if type(post_params) is dict:
-            for param in required_params:
-                if not param in post_params:
-                    return False
+            required_params = ['action', 'email', 'send_id', 'sig']
+            if self.check_for_valid_postback_actions(required_params, post_params) is False:
+                return False
         else:
             return False
 
@@ -536,11 +535,10 @@ class SailthruClient:
         """
         Optout postbacks
         """
-        required_params = ['action', 'email', 'sig']
         if type(post_params) is dict:
-            for param in required_params:
-                if not param in post_params:
-                    return False
+            required_params = ['action', 'email', 'sig']
+            if self.check_for_valid_postback_actions(required_params, post_params) is False:
+                return False
         else:
             return False
 
@@ -559,11 +557,10 @@ class SailthruClient:
         """
         Hard bounce postbacks
         """
-        required_params = ['action', 'email', 'sig']
         if type(post_params) is dict:
-            for param in required_params:
-                if not param in post_params:
-                    return False
+            required_params = ['action', 'email', 'sig']
+            if self.check_for_valid_postback_actions(required_params, post_params ) is False:
+                return False
         else:
             return False
 
@@ -592,6 +589,14 @@ class SailthruClient:
 
         return True
 
+    def check_for_valid_postback_actions(self, required_keys, post_params):
+        """
+        checks if post_params contain required keys
+        """
+        for key in required_keys:
+            if not key in post_params:
+                return False
+        return True
 
     def api_get(self, action, data):
         """
