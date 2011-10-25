@@ -508,6 +508,91 @@ class SailthruClient:
         """
         return self.api_get('stats', data)
 
+    def receive_verify_post(self, post_params):
+        """
+        Returns true if the incoming request is an authenticated verify post.
+        """
+        required_params = ['action', 'email', 'send_id', 'sig']
+        if type(post_params) is dict:
+            for param in required_params:
+                if not param in post_params:
+                    return False
+        else:
+            return False
+
+        sig = post_params['sig']
+        del post_params['sig']
+
+        send_response = self.api_send(post_params['send_id'])
+        if not 'email' in send_response:
+            return False
+        
+        if send_response['email'] != post_params['email']:
+            return False
+
+        return True
+
+    def receive_optout_post(self, post_params):
+        """
+        Optout postbacks
+        """
+        required_params = ['action', 'email', 'sig']
+        if type(post_params) is dict:
+            for param in required_params:
+                if not param in post_params:
+                    return False
+        else:
+            return False
+
+        if post_params['action'] != 'optout':
+            return False
+
+        signature = post_params['sig']
+        del post_param['sig']
+
+        if signature != get_signature_hash(post_params, self.secret):
+            return False
+
+        return True
+
+    def receive_hardbounce_post(self, post_params):
+        """
+        Hard bounce postbacks
+        """
+        required_params = ['action', 'email', 'sig']
+        if type(post_params) is dict:
+            for param in required_params:
+                if not param in post_params:
+                    return False
+        else:
+            return False
+
+        if post_params['action'] != 'hardbounce':
+            return False
+
+        signature = post_params['sig']
+        del post_param['sig']
+
+        if signature != get_signature_hash(post_params, self.secret):
+            return False
+
+        # for sends
+        if 'send_id' in post_params:
+            send_id = post_params['send_id']
+            send_response = self.get_send(send_id)
+            if not 'email' in send_response:
+                return False
+
+        # for blasts
+        if 'blast_id' in post_params:
+            blast_id = post_params['blast_id']
+            blast_response = self.get_blast(blast_id)
+            if 'error' in blast_response:
+                return False
+
+        return True
+
+
     def api_get(self, action, data):
         """
         Perform an HTTP GET request, using the shared-secret auth hash.
