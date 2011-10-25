@@ -28,11 +28,30 @@ For usage examples, you can take a look at [Ruby](https://github.com/sailthru/sa
 
 Examples
 --------
-    from sailthru import *
+    from sailthru import sailthru_client as sc
     
     api_key = '*******'
     api_secret = '*******'
-    sailthru_client = SailthruClient(api_key, api_secret)
-    response = sailthru_client.get_email('eli@sailthru.com')
+    sailthru_client = sc.SailthruClient(api_key, api_secret)
+    try:
+        response = sailthru_client.get_email('eli@sailthru.com')
+    except urllib2.URLError as e:
+        # handle exceptions
+        print e
+    except urllib2.HTTPError as e:
+        # handle exceptions
+        print e
+
+### postbacks
     
-    
+    # for authenticating verify postbacks
+    verify_params = {'action': 'verify', 'email': 'praj@sailthru.com', 'send_id': 'TE8EZ3-LmosnAgAA', 'sig': 'generated_signature'}
+    is_verified_postback = sailtrhu_client.recieve_verify_post(verify_params)
+
+    # for authenticating optout postbacks
+    optout_params = {'action': 'verify', 'email': 'praj@sailthru.com', 'sig': 'generated_signature'}
+    is_optout_postback = sailtrhu_client.recieve_optout_post(optout__params)
+
+    # for authenticating hardbounce postbacks
+    hardbounce_params = {'action': 'hardbounce', 'email': 'praj@sailthru.com', 'sig': 'generated_signature'}
+    is_hardbounce_postback = sailtrhu_client.recieve_hardbounce_post(hardbounce_params)
