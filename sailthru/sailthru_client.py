@@ -533,7 +533,7 @@ class SailthruClient:
             return False
 
         signature = post_params['sig']
-        del post_param['sig']
+        del post_params['sig']
 
         if signature != get_signature_hash(post_params, self.secret):
             return False
@@ -555,7 +555,7 @@ class SailthruClient:
             return False
 
         signature = post_params['sig']
-        del post_param['sig']
+        del post_params['sig']
 
         if signature != get_signature_hash(post_params, self.secret):
             return False
