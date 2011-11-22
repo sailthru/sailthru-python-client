@@ -42,7 +42,7 @@ def get_signature_hash(params, secret):
     return hashlib.md5(get_signature_string(params, secret)).hexdigest()
 
 
-class SailthruClient:
+class SailthruClient(object):
 
     """
     This class makes HTTP Request to Sailthru API server
@@ -289,7 +289,7 @@ class SailthruClient:
         """
         data = {'template': ''}
         return self.api_get('template', data)
-    
+
     def delete_template(self, template_name):
         """
         delete existing template
@@ -512,7 +512,7 @@ class SailthruClient:
                 return False
         except json.decoder.JSONDecodeError as json_err:
             return False
-        
+
         if send_response['email'] != post_params['email']:
             return False
 
