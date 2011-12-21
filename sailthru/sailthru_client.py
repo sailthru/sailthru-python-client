@@ -621,11 +621,16 @@ class SailthruClient(object):
         """
         Make Request to Sailthru API with given data and api key, format and signature hash
         """
-        data['api_key'] = self.api_key
-        data['format'] = data.get('format', 'json')
-        data['sig'] = ''
-        data['sig'] = get_signature_hash(data, self.secret)
-        return self._http_request(self.api_url+'/'+action, data, request_type)
+        return self._http_request(self.api_url+'/'+action, self._prepare_json_payload(data), request_type)
 
     def _http_request(self, url, data, method='POST'):
         return sailthru_http_request(url, data, method)
+
+    def _prepare_json_payload(self, data):
+        payload = {}
+        payload['api_key'] = self.api_key
+        payload['format'] = 'json' # seriously, fuck XML
+        payload['json'] = json.dumps(data)
+        signature = get_signature_hash(payload, self.secret)
+        payload['sig'] = signature
+        return payload
