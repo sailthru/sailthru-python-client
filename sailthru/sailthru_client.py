@@ -629,7 +629,7 @@ class SailthruClient(object):
     def _prepare_json_payload(self, data):
         payload = {}
         payload['api_key'] = self.api_key
-        payload['format'] = 'json' # seriously, fuck XML
+        payload['format'] = 'json' # seriously, <3 XML
         payload['json'] = json.dumps(data)
         signature = get_signature_hash(payload, self.secret)
         payload['sig'] = signature
