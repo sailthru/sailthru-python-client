@@ -5,7 +5,7 @@ try:
 except ImportError: 
     import json
 
-class SailthruResponse:
+class SailthruResponse(object):
     def __init__(self, response):
         self.response = response
 
@@ -25,7 +25,7 @@ class SailthruResponse:
     def get_status_code(self):
         return self.response.status_code
 
-class SailthruResponseError:
+class SailthruResponseError(object):
     def __init__(self, sailthru_response):
         self.response_dict = sailthru_response.get_body()
 
