@@ -1,9 +1,10 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 version = '1.0.2'
 
 setup(name='sailthru-client', 
         version=version,
+        packages=find_packages(),
         description='Python client for Sailthru API',
         long_description=open('./README.md').read(),
         classifiers=[
@@ -13,6 +14,9 @@ setup(name='sailthru-client',
             "Operating System :: OS Independent",
             "Natural Language :: English",
             ],
+        install_requires=[
+            'requests'
+        ],
         keywords='sailthru api',
         install_requires=['requests'],
         author='Prajwal Tuladhar',
