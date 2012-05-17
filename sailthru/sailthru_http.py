@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import requests
-from sailthru_error import SailthruClientError
-from sailthru_response import SailthruResponse
+from sailthru.sailthru_error import SailthruClientError
+from sailthru.sailthru_response import SailthruResponse
 
 def flatten_nested_hash(hash_table):
     """
@@ -32,11 +32,12 @@ def sailthru_http_request(url, data, method, file_data = None):
     """
     files = {}
     data = flatten_nested_hash(data)
-    params = data if method != 'post' else None
-    body = data if method == 'post' else None
+    method = method.upper()
+    params = data if method != 'POST' else None
+    body = data if method == 'POST' else None
     try:
 	headers = { 'User-Agent': 'Sailthru API Python Client' }
-	response = requests.request(method, url, data, data, headers, None, file_data)
+        response = requests.request(method, url, params = params, data = data, files = file_data, headers = headers)
         if response.status_code is None:
             raise SailthruClientError(response.error)
         return SailthruResponse(response)
