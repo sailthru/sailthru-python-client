@@ -3,18 +3,22 @@
 import hashlib
 from sailthru_http import sailthru_http_request
 
+try: import simplejson as json
+except ImportError: import json
+
 def extract_params(params):
     """
     Extracts the values of a set of parameters, recursing into nested dictionaries.
     """
     values = []
-    for key, value in params.items():
-        if type(value) == type(dict()):
+    if type(params) == type(dict()):
+        for key, value in params.items():
             values.extend(extract_params(value))
-        elif type(value) == type(list()):
-            values.extend(value)
-        else:
-            values.append(value)
+    elif type(params) == type(list()):
+        for value in params:
+            values.extend(extract_params(value))
+    else:
+        values.append(params)
     return values
 
 def get_signature_string(params, secret):
@@ -37,7 +41,9 @@ def get_signature_hash(params, secret):
     """
     return hashlib.md5(get_signature_string(params, secret)).hexdigest()
 
-class SailthruClient:
+
+class SailthruClient(object):
+
     """
     This class makes HTTP Request to Sailthru API server
     Response from server depends on the format being queried
@@ -56,6 +62,7 @@ class SailthruClient:
         self.api_key = api_key
         self.secret = secret
         self.api_url = api_url if (api_url is not None) else 'https://api.sailthru.com'
+        self.user_agent = 'Sailthru API Python Client'
 
     def send(self, template, email, _vars = {}, options = {}, schedule_time = None):
         """
@@ -71,7 +78,7 @@ class SailthruClient:
         data['template'] = template
         data['email'] = email
         data['vars'] = _vars
-        data['options'] = options
+        data['options'] = options.copy()
         if schedule_time is not None:
             data['schedule_time'] = schedule_time
         return self.api_post('send', data)
@@ -89,9 +96,9 @@ class SailthruClient:
         data = {}
         data['template'] = template
         data['email'] = ','.join(emails) if type(emails) is list else emails
-        data['vars'] = _vars
-        data['evars'] = evars
-        data['options'] = options
+        data['vars'] = _vars.copy()
+        data['evars'] = evars.copy()
+        data['options'] = options.copy()
         return self.api_post('send', data)
 
     def get_send(self, send_id):
@@ -121,7 +128,7 @@ class SailthruClient:
         """
         data = {}
         data['email'] = email
-        data['vars'] = _vars
+        data['vars'] = _vars.copy()
         data['lists'] = lists
         data['templates'] = templates
         data['verified'] = int(verified)
@@ -160,7 +167,7 @@ class SailthruClient:
             test_percent
             data_feed_url
         """
-        data = options
+        data = options.copy()
         data['name'] = name
         data['list'] = list
         data['schedule_time'] = schedule_time
@@ -180,7 +187,7 @@ class SailthruClient:
         @param schedule_time
         @param options: additional optional params
         """
-        data = options
+        data = options.copy()
         data['copy_template'] = template
         data['list'] = list
         data['schedule_time'] = schedule_time
@@ -194,7 +201,7 @@ class SailthruClient:
         @param schedule_time
         @param options: additional optional params
         """
-        data = options
+        data = options.copy()
         data['copy_blast'] = blast_id
         data['schedule_time'] = schedule_time
         return self.api_post('blast', data)
@@ -228,7 +235,7 @@ class SailthruClient:
             test_percent
             data_feed_url
         """
-        data = options
+        data = options.copy()
         data['blast_id'] = blast_id
         if name is not None:
             data['name'] = name
@@ -282,7 +289,7 @@ class SailthruClient:
         """
         data = {'template': ''}
         return self.api_get('template', data)
-    
+
     def delete_template(self, template_name):
         """
         delete existing template
@@ -291,7 +298,7 @@ class SailthruClient:
         return self.api_delete('template', data)
 
     def save_template(self, template, template_fields = {}):
-        data = template_fields
+        data = template_fields.copy()
         data['template'] = template
         return self.api_post('template', data)
 
@@ -360,7 +367,7 @@ class SailthruClient:
         if tags is not None:
             data['tags'] = ",".join(tags) if type(tags) is list else tags
         if len(vars) > 0:
-            data['vars'] = vars
+            data['vars'] = vars.copy()
         return self.api_post('content', data)
 
     def get_alert(self, email):
@@ -391,7 +398,7 @@ class SailthruClient:
         @param when: date string required for summary alert (daily/weekly)
         @param options: dictionary value for adding tags, max price, min price, match type
         """
-        data = options
+        data = options.copy()
         data['email'] = email
         data['type'] = type
         data['template'] = template
@@ -415,9 +422,9 @@ class SailthruClient:
         @param email: Email string
         @param items: list of item dictionary with keys: id, title, price, qty, and url
         @param message_id: message_id string
-        @param options: optional purchase params
+        @param options
         """
-        data = options
+        data = options.copy()
         data['email'] = email
         data['items'] = items
         if incomplete is not None:
@@ -445,7 +452,7 @@ class SailthruClient:
         Retrieve information about a particular blast or aggregated information from all of blasts over a specified date range.
         http://docs.sailthru.com/api/stat
         """
-        data = options
+        data = options.copy()
         if blast_id is not None:
             data['blast_id'] = blast_id
         if start_date is not None:
@@ -481,77 +488,110 @@ class SailthruClient:
         """
         return self.api_get('stats', data)
 
-    def _process_job(self, job, options = {}, report_email = None, postback_url = None, file_data = None):
-	"""
-	Interface for making request to job call
-	@param job: string
-	@param options: dictionary
-        @param report_email: string
-	@param postback_url: string
-	@param file_data: string
-	"""
-	data = options
-	data['job'] = job
-	if report_email is not None:
-	    data['report_email'] = report_email
-	if postback_url is not None:
-	    data['postback_url'] = postback_url
-	return self.api_post(job, data, file_data)
+    def receive_verify_post(self, post_params):
+        """
+        Returns true if the incoming request is an authenticated verify post.
+        """
+        if type(post_params) is dict:
+            required_params = ['action', 'email', 'send_id', 'sig']
+            if self.check_for_valid_postback_actions(required_params, post_params) is False:
+                return False
+        else:
+            return False
 
-    def process_import_job(self, job_list, emails, report_email = None, postback_url = None): 
-	"""
-	Process job from email string input in CSV
-	@param job_list: list
-	@param emails: emails
-	@param report_email: string
-	@param postback_url: string
-	"""
-	data = {}
-	data['list'] = job_list
-	data['emails'] = emails
-	return self._process_job('import', data, report_email, postback_url)
+        if action != 'verify':
+            return False
 
-    def process_import_job_from_file(self, job_list, file_path, report_email = None, postback_url = None):
-	"""
-	Process job from an input file
-	@param job_list: list
-	@param file_path: string
-	@param report_email: string
-	@param postback_url: string
-	"""
-	data = {}
-	data['list'] = job_list
-	data['file'] = file_path
-        return self._process_job('import', data, report_email, postback_url, data['file'])
+        sig = post_params['sig']
+        del post_params['sig']
 
-    def process_snapshot_job(self, query = {}, report_email = None, postback_url = None):
-	"""
-	Implementation for a snapshot job
-	@param query: dictionary
-	@param report_email: string
-	@param postback_url: string
-	"""
-	data = {}
-	data['query'] = query
-	return self._process_job('snapshot', data, report_email, postback_url)
+        send_response = self.get_send(post_params['send_id'])
+        try:
+            send_response = json.loads(send_response)
+            if not 'email' in send_response:
+                return False
+        except json.decoder.JSONDecodeError as json_err:
+            return False
 
-    def process_export_list_job(self, job_list, report_email = None, postback_url = None):
-	"""
-	Implementation of export list job
-	@param job_list: list
-	@param report_email: string
-	@param postback_url: string
-	"""
-	data = {}
-	data['list'] = job_list
-	return self._process_job('export_list_data', data, report_email, postback_url)
+        if send_response['email'] != post_params['email']:
+            return False
 
-    def get_job_status(self, job_id):
-	"""
-	Get status of a job
-	@param job_id:
-	"""
-	return self.api_get('job', {'job_id': job_id})
+        return True
+
+    def receive_optout_post(self, post_params):
+        """
+        Optout postbacks
+        """
+        if type(post_params) is dict:
+            required_params = ['action', 'email', 'sig']
+            if self.check_for_valid_postback_actions(required_params, post_params) is False:
+                return False
+        else:
+            return False
+
+        if post_params['action'] != 'optout':
+            return False
+
+        signature = post_params['sig']
+        del post_params['sig']
+
+        if signature != get_signature_hash(post_params, self.secret):
+            return False
+
+        return True
+
+    def receive_hardbounce_post(self, post_params):
+        """
+        Hard bounce postbacks
+        """
+        if type(post_params) is dict:
+            required_params = ['action', 'email', 'sig']
+            if self.check_for_valid_postback_actions(required_params, post_params ) is False:
+                return False
+        else:
+            return False
+
+        if post_params['action'] != 'hardbounce':
+            return False
+
+        signature = post_params['sig']
+        del post_params['sig']
+
+        if signature != get_signature_hash(post_params, self.secret):
+            return False
+
+        # for sends
+        if 'send_id' in post_params:
+            send_id = post_params['send_id']
+            send_response = self.get_send(send_id)
+            try:
+                send_response = json.loads(send_response)
+                if not 'email' in send_response:
+                    return False
+            except json.decoder.JSONDecodeError as json_err:
+                return False
+
+        # for blasts
+        if 'blast_id' in post_params:
+            blast_id = post_params['blast_id']
+            blast_response = self.get_blast(blast_id)
+            try:
+                blast_response = json.loads(blast_response)
+                if 'error' in blast_response:
+                    return False
+            except json.decoder.JSONDecodeError as json_err:
+                return False
+
+        return True
+
+    def check_for_valid_postback_actions(self, required_keys, post_params):
+        """
+        checks if post_params contain required keys
+        """
+        for key in required_keys:
+            if not key in post_params:
+                return False
+        return True
 
     def api_get(self, action, data):
         """
@@ -561,13 +601,35 @@ class SailthruClient:
         """
         return self._api_request(action, data, 'GET')
 
-    def api_post(self, action, data, file_data = None):
+    def api_post(self, action, data, binary_data_param = []):
         """
         Perform an HTTP POST request, using the shared-secret auth hash.
         @param action: API action call
         @param data: dictionary values
         """
-        return self._api_request(action, data, 'POST', file_data)
+        if len(binary_data_param) > 0:
+            return self.api_post_multipart(action, data, binary_data_param)
+        else:
+            return self._api_request(action, data, 'POST')
+
+    def api_post_multipart(self, action, data, binary_data_param):
+        """
+         Perform an HTTP Multipart POST request, using the shared-secret auth hash.
+        @param action: API action call
+        @param data: dictionary values
+        @param: binary_data_params: array of multipart keys
+        """
+        binary_data = {}
+        data_keys = data.keys()
+        for param in binary_data_param:
+            if param in data_keys:
+                binary_data[param] = open(data[param], 'r')
+                del data[param]
+        json_payload = self._prepare_json_payload(data)
+
+        print data
+        
+        return self._http_request(self.api_url+'/'+action, json_payload, "POST", binary_data)
 
     def api_delete(self, action, data):
         """
@@ -577,14 +639,20 @@ class SailthruClient:
         """
         return self._api_request(action, data, 'DELETE')
 
-    def _api_request(self, action, data, request_type, file_data = None):
+    def _api_request(self, action, data, request_type):
         """
         Make Request to Sailthru API with given data and api key, format and signature hash
         """
-        data['api_key'] = self.api_key
-        data['format'] = data.get('format', 'json')
-        data['sig'] = get_signature_hash(data, self.secret)
-        return self._http_request(self.api_url+'/'+action, data, request_type, file_data)
+        return self._http_request(self.api_url+'/'+action, self._prepare_json_payload(data), request_type)
 
-    def _http_request(self, url, data, method, file_data = None):
+    def _http_request(self, url, data, method, file_data = {}):
         return sailthru_http_request(url, data, method, file_data)
+
+    def _prepare_json_payload(self, data):
+        payload = {}
+        payload['api_key'] = self.api_key
+        payload['format'] = 'json'
+        payload['json'] = json.dumps(data)
+        signature = get_signature_hash(payload, self.secret)
+        payload['sig'] = signature
+        return payload
