@@ -3,7 +3,7 @@ sailthru-python-client
 
 A simple client library to remotely access the `Sailthru REST API` as per [http://docs.sailthru.com/api](http://docs.sailthru.com/api).
 
-By default, it will make request in `JSON` format.
+It will make request in `JSON` format.
 
 Tested with `Python 2.6.x` but should work also with `>= 2.4.x`
 
@@ -26,7 +26,7 @@ For usage examples, you can take a look at [Ruby](https://github.com/sailthru/sa
 ### Installation (Tested with Python 2.7.x)
     pip install -e git://github.com/sailthru/sailthru-python-client.git#egg=sailthru-client
 
-Examples
+Simple Example
 --------
     from sailthru.sailthru_client import SailthruClient
     from sailthru.sailthru_response import SailthruResponseError
@@ -37,18 +37,22 @@ Examples
     sailthru_client = SailthruClient(api_key, api_secret)
 
     try:
-        response = sailthru_client.set_email('praj@sailthru.com')
-        #response = sailthru_client.delete_template('from-python')
-        #response = sailthru_client.get_alert('praj@infynyxx.com')
-        
-        body = response.get_body()
+        sailthru_client = SailthruClient(api_key, secret)
+        response = sailthru_client.api_get("email", {"email": "praj@sailthru.com"})
+
         if response.is_ok():
+            body = response.get_body()
             print body
         else:
-            error = SailthruResponseError(response)
-            print error.get_message()
-            print response.get_status_code()
-
+            error = response.get_error()
+            print "Error: " + error.get_message()
+            print "Status Code: " + str(response.get_status_code())
+            print "Error Code: " + str(error.get_error_code())
     except SailthruClientError, e:
-        print("Exception: " + str(e))
-
+        # Handle exceptions
+        print "Exception"
+        print e
+    
+Multipart POST
+-------
+        response = sailthru_client.api_post("job", {"job": "import", "file": "file_location", "list": "Python-List"}, ['file'])
