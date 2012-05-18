@@ -31,7 +31,7 @@ For usage examples, you can take a look at [Ruby](https://github.com/sailthru/sa
 
 Simple Example
 --------
-
+    ``` python
     from sailthru.sailthru_client import SailthruClient
     from sailthru.sailthru_response import SailthruResponseError
     from sailthru.sailthru_error import SailthruClientError
@@ -56,22 +56,28 @@ Simple Example
         # Handle exceptions
         print "Exception"
         print e
-
+    ```
 
 ### Making POST Request
+    ``` python
     request_data = {'email': 'praj@sailthru.com', 'verified': 1, 'vars': {'name': 'Prajwal Tuladhar', 'address': {'city': 'Jackson Heights', 'zip': 11372, 'state': 'NY'}}, 'twitter': 'infynyxx'}
     response = sc.api_post('email', request_data)
+    ```
 
 ### Making GET Request
+    ``` python
     request_data = {'email': 'praj@sailthru.com'}
     response = sc.api_get('email', request_data)
+    ```
 
 ### Making DELETE Request
+    ``` python
     request_data = {'template': 'My-unused template'}
     response = sc.api_delete('template', request_data)
+    ```
 
 ### postbacks
-    
+    ``` python
     # for authenticating verify postbacks
     verify_params = {'action': 'verify', 'email': 'praj@sailthru.com', 'send_id': 'TE8EZ3-LmosnAgAA', 'sig': 'generated_signature'}
     is_verified_postback = sailtrhu_client.recieve_verify_post(verify_params)
@@ -83,6 +89,9 @@ Simple Example
     # for authenticating hardbounce postbacks
     hardbounce_params = {'action': 'hardbounce', 'email': 'praj@sailthru.com', 'sig': 'generated_signature'}
     is_hardbounce_postback = sailtrhu_client.recieve_hardbounce_post(hardbounce_params)
+    ```
     
 ## multipart POST
+    ``` python
     response = sailthru_client.api_post("job", {"job": "import", "file": "file_location", "list": "Python-List"}, ['file'])
+    ```
