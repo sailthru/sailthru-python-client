@@ -3,7 +3,7 @@ sailthru-python-client
 
 A simple client library to remotely access the `Sailthru REST API` as per [http://docs.sailthru.com/api](http://docs.sailthru.com/api).
 
-By default, it will make request in `JSON` format.
+It will make request in `JSON` format.
 
 Tested with `Python 2.6.x` but should work also with `>= 2.4.x`
 
@@ -29,21 +29,34 @@ For usage examples, you can take a look at [Ruby](https://github.com/sailthru/sa
 ### Running tests
     nosetests -v
 
-Examples
+Simple Example
 --------
-    from sailthru import sailthru_client as sc
-    
+
+    from sailthru.sailthru_client import SailthruClient
+    from sailthru.sailthru_response import SailthruResponseError
+    from sailthru.sailthru_error import SailthruClientError
+
     api_key = '*******'
     api_secret = '*******'
-    sailthru_client = sc.SailthruClient(api_key, api_secret)
+    sailthru_client = SailthruClient(api_key, api_secret)
+
     try:
-        response = sailthru_client.get_email('eli@sailthru.com')
-    except urllib2.URLError as e:
-        # handle exceptions
+        sailthru_client = SailthruClient(api_key, secret)
+        response = sailthru_client.api_get("email", {"email": "praj@sailthru.com"})
+
+        if response.is_ok():
+            body = response.get_body()
+            print body
+        else:
+            error = response.get_error()
+            print "Error: " + error.get_message()
+            print "Status Code: " + str(response.get_status_code())
+            print "Error Code: " + str(error.get_error_code())
+    except SailthruClientError, e:
+        # Handle exceptions
+        print "Exception"
         print e
-    except urllib2.HTTPError as e:
-        # handle exceptions
-        print e
+
 
 ### Making POST Request
     request_data = {'email': 'praj@sailthru.com', 'verified': 1, 'vars': {'name': 'Prajwal Tuladhar', 'address': {'city': 'Jackson Heights', 'zip': 11372, 'state': 'NY'}}, 'twitter': 'infynyxx'}
@@ -70,3 +83,6 @@ Examples
     # for authenticating hardbounce postbacks
     hardbounce_params = {'action': 'hardbounce', 'email': 'praj@sailthru.com', 'sig': 'generated_signature'}
     is_hardbounce_postback = sailtrhu_client.recieve_hardbounce_post(hardbounce_params)
+    
+## multipart POST
+    response = sailthru_client.api_post("job", {"job": "import", "file": "file_location", "list": "Python-List"}, ['file'])

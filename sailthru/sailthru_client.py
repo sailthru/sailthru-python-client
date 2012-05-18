@@ -601,13 +601,35 @@ class SailthruClient(object):
         """
         return self._api_request(action, data, 'GET')
 
-    def api_post(self, action, data):
+    def api_post(self, action, data, binary_data_param = []):
         """
         Perform an HTTP POST request, using the shared-secret auth hash.
         @param action: API action call
         @param data: dictionary values
         """
-        return self._api_request(action, data, 'POST')
+        if len(binary_data_param) > 0:
+            return self.api_post_multipart(action, data, binary_data_param)
+        else:
+            return self._api_request(action, data, 'POST')
+
+    def api_post_multipart(self, action, data, binary_data_param):
+        """
+         Perform an HTTP Multipart POST request, using the shared-secret auth hash.
+        @param action: API action call
+        @param data: dictionary values
+        @param: binary_data_params: array of multipart keys
+        """
+        binary_data = {}
+        data_keys = data.keys()
+        for param in binary_data_param:
+            if param in data_keys:
+                binary_data[param] = open(data[param], 'r')
+                del data[param]
+        json_payload = self._prepare_json_payload(data)
+
+        print data
+        
+        return self._http_request(self.api_url+'/'+action, json_payload, "POST", binary_data)
 
     def api_delete(self, action, data):
         """
@@ -622,14 +644,14 @@ class SailthruClient(object):
         Make Request to Sailthru API with given data and api key, format and signature hash
         """
         return self._http_request(self.api_url+'/'+action, self._prepare_json_payload(data), request_type)
-
-    def _http_request(self, url, data, method='POST'):
-        return sailthru_http_request(url, data, method)
+    
+    def _http_request(self, url, data, method, file_data = {}):
+        return sailthru_http_request(url, data, method, file_data)
 
     def _prepare_json_payload(self, data):
         payload = {}
         payload['api_key'] = self.api_key
-        payload['format'] = 'json' # seriously, <3 XML
+        payload['format'] = 'json'
         payload['json'] = json.dumps(data)
         signature = get_signature_hash(payload, self.secret)
         payload['sig'] = signature
