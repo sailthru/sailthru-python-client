@@ -302,15 +302,14 @@ class SailthruClient(object):
         data['template'] = template
         return self.api_post('template', data)
 
-    def get_list(self, list, format='txt'):
+    def get_list(self, list, options = {}):
         """
         Download a list. Obviously, this can potentially be a very large download.
         'txt' is default format since, its more compact as compare to others
         http://docs.sailthru.com/api/list
         """
-        data = {}
+        data = options.copy()
         data['list'] = list
-        data['format'] = format
         return self.api_get('list', data)
 
     def get_lists(self):
