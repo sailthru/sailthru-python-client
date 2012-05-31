@@ -59,22 +59,23 @@ request_data = {'template': 'My-unused template'}
 response = sc.api_delete('template', request_data)
 ```
 
-### postbacks
+### Handling Postbacks
 ``` python
 # for authenticating verify postbacks
 verify_params = {'action': 'verify', 'email': 'praj@sailthru.com', 'send_id': 'TE8EZ3-LmosnAgAA', 'sig': 'generated_signature'}
 is_verified_postback = sailtrhu_client.recieve_verify_post(verify_params)
 
-# for authenticating optout postbacks
+### Authenticating optout postbacks
 optout_params = {'action': 'verify', 'email': 'praj@sailthru.com', 'sig': 'generated_signature'}
 is_optout_postback = sailtrhu_client.recieve_optout_post(optout__params)
 
-# for authenticating hardbounce postbacks
+### Authenticating hardbounce postbacks
 hardbounce_params = {'action': 'hardbounce', 'email': 'praj@sailthru.com', 'sig': 'generated_signature'}
 is_hardbounce_postback = sailtrhu_client.recieve_hardbounce_post(hardbounce_params)
 ```
     
-## multipart POST
+### Multipart Request
 ``` python
+# import job API call
 response = sailthru_client.api_post("job", {"job": "import", "file": "file_location", "list": "Python-List"}, ['file'])
 ```
