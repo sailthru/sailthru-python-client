@@ -1,9 +1,9 @@
 from setuptools import setup, find_packages
-
-version = '1.0.7'
+from os.path import join, dirname
+import sailthru
 
 setup(name='sailthru-client', 
-        version=version,
+        version=sailthru.__version__,
         packages=find_packages(),
         description='Python client for Sailthru API',
         long_description=open('./README.md').read(),
@@ -15,14 +15,12 @@ setup(name='sailthru-client',
             "Natural Language :: English",
             ],
         install_requires=[
-            'requests'
+            'requests==0.13.0'
         ],
         keywords='sailthru api',
-        install_requires=['requests'],
         author='Prajwal Tuladhar',
         author_email='praj@sailthru.com',
         url='https://github.com/sailthru/sailthru-python-client',
         license='MIT License',
-        packages=['sailthru'],
         include_package_data=True,
         zip_safe=True)
