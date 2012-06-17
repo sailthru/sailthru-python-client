@@ -4,7 +4,7 @@ setup(name='sailthru-client',
     version='2.0.1',
     packages=find_packages(),
     description='Python client for Sailthru API',
-    long_description=open('./README.md').read(),
+    long_description=open('README.md').read(),
     classifiers=[
         "License :: OSI Approved :: MIT License",
         "Topic :: Utilities",
