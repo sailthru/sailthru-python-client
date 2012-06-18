@@ -12,10 +12,6 @@ Tested with `Python 2.7.x` but it should work with 2.6.x also.
 Installing with [pip](http://www.pip-installer.org/):
 
     pip install sailthru-client
-
-Installing directly from Git Repo:
-    
-    pip install git+https://github.com/sailthru/sailthru-python-client.git#egg=sailthru-client
     
 ### Running tests
     nosetests -v
