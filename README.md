@@ -47,19 +47,19 @@ except SailthruClientError, e:
 ### Making POST Request
 ``` python
 request_data = {'email': 'praj@sailthru.com', 'verified': 1, 'vars': {'name': 'Prajwal Tuladhar', 'address': {'city': 'Jackson Heights', 'zip': 11372, 'state': 'NY'}}, 'twitter': 'infynyxx'}
-response = sc.api_post('email', request_data)
+response = sailthru_client.api_post('email', request_data)
 ```
 
 ### Making GET Request
 ``` python
 request_data = {'email': 'praj@sailthru.com'}
-response = sc.api_get('email', request_data)
+response = sailthru_client.api_get('email', request_data)
 ```
 
 ### Making DELETE Request
 ``` python
 request_data = {'template': 'My-unused template'}
-response = sc.api_delete('template', request_data)
+response = sailthru_client.api_delete('template', request_data)
 ```
 
 ### Handling Postbacks
