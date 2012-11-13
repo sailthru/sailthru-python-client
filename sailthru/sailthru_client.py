@@ -498,7 +498,7 @@ class SailthruClient(object):
         else:
             return False
 
-        if action != 'verify':
+        if post_params['action'] != 'verify':
             return False
 
         sig = post_params['sig']
