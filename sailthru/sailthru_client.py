@@ -64,7 +64,7 @@ class SailthruClient(object):
         self.api_url = api_url if (api_url is not None) else 'https://api.sailthru.com'
         self.user_agent = 'Sailthru API Python Client'
 
-    def send(self, template, email, _vars = {}, options = {}, schedule_time = None):
+    def send(self, template, email, _vars=None, options=None, schedule_time=None):
         """
         Remotely send an email template to a single email address.
         http://docs.sailthru.com/api/send
@@ -74,6 +74,8 @@ class SailthruClient(object):
         @param options: optional dictionary to include replyto and/or test keys
         @param schedule_time: do not send the email immediately, but at some point in the future. Any date recognized by PHP's strtotime function is valid, but be sure to specify timezone or use a UTC time to avoid confusion
         """
+        _vars = _vars or {}
+        options = options or {}
         data = {}
         data['template'] = template
         data['email'] = email
@@ -83,7 +85,7 @@ class SailthruClient(object):
             data['schedule_time'] = schedule_time
         return self.api_post('send', data)
 
-    def multi_send(self, template, emails, _vars = {}, evars = {}, options = {}):
+    def multi_send(self, template, emails, _vars=None, evars=None, options=None):
         """
         Remotely send an email template to multiple email addresses.
         http://docs.sailthru.com/api/send
@@ -93,6 +95,9 @@ class SailthruClient(object):
         @param options: optional dictionary to include replyto and/or test keys
         @param schedule_time: do not send the email immediately, but at some point in the future. Any date recognized by PHP's strtotime function is valid, but be sure to specify timezone or use a UTC time to avoid confusion
         """
+        _vars = _vars or {}
+        evars = evars or {}
+        options = options or {}
         data = {}
         data['template'] = template
         data['email'] = ','.join(emails) if type(emails) is list else emails
@@ -121,11 +126,15 @@ class SailthruClient(object):
         data = {'email': email}
         return self._api_request('email', data, 'GET')
 
-    def set_email(self, email, _vars={}, lists=[], templates=[], verified=0, optout=None, send=None, send_vars=[]):
+    def set_email(self, email, _vars=None, lists=None, templates=None, verified=0, optout=None, send=None, send_vars=None):
         """
         Update information about one of your users, including adding and removing the user from lists.
         http://docs.sailthru.com/api/email
         """
+        _vars = _vars or {}
+        lists = lists or []
+        templates = templates or []
+        send_vars = send_vars or []
         data = {}
         data['email'] = email
         data['vars'] = _vars.copy()
@@ -139,7 +148,7 @@ class SailthruClient(object):
         data['send_vars'] = send_vars
         return self.api_post('email', data)
 
-    def schedule_blast(self, name, list, schedule_time, from_name, from_email, subject, content_html, content_text, options={}):
+    def schedule_blast(self, name, list, schedule_time, from_name, from_email, subject, content_html, content_text, options=None):
         """
         Schedule a mass mail blast
         http://docs.sailthru.com/api/blast
@@ -167,6 +176,7 @@ class SailthruClient(object):
             test_percent
             data_feed_url
         """
+        options = options or {}
         data = options.copy()
         data['name'] = name
         data['list'] = list
@@ -178,7 +188,7 @@ class SailthruClient(object):
         data['content_text'] = content_text
         return self.api_post('blast', data)
 
-    def schedule_blast_from_template(self, template, list, schedule_time, options={}):
+    def schedule_blast_from_template(self, template, list, schedule_time, options=None):
         """
         Schedule a mass mail blast from template
         http://docs.sailthru.com/api/blast
@@ -187,13 +197,14 @@ class SailthruClient(object):
         @param schedule_time
         @param options: additional optional params
         """
+        options = options or {}
         data = options.copy()
         data['copy_template'] = template
         data['list'] = list
         data['schedule_time'] = schedule_time
         return self.api_post('blast', data)
 
-    def schedule_blast_from_blast(self, blast_id, schedule_time, options={}):
+    def schedule_blast_from_blast(self, blast_id, schedule_time, options=None):
         """
         Schedule a mass mail blast from previous blast
         http://docs.sailthru.com/api/blast
@@ -201,12 +212,13 @@ class SailthruClient(object):
         @param schedule_time
         @param options: additional optional params
         """
+        options = options or {}
         data = options.copy()
         data['copy_blast'] = blast_id
         data['schedule_time'] = schedule_time
         return self.api_post('blast', data)
 
-    def update_blast(self, blast_id, name=None, list=None, schedule_time=None, from_name=None, from_email=None, subject=None, content_html=None, content_text=None, options={}):
+    def update_blast(self, blast_id, name=None, list=None, schedule_time=None, from_name=None, from_email=None, subject=None, content_html=None, content_text=None, options=None):
         """
         updates existing blast
         http://docs.sailthru.com/api/blast
@@ -235,6 +247,7 @@ class SailthruClient(object):
             test_percent
             data_feed_url
         """
+        options = options or {}
         data = options.copy()
         data['blast_id'] = blast_id
         if name is not None:
@@ -297,17 +310,19 @@ class SailthruClient(object):
         data = {'template': template_name}
         return self.api_delete('template', data)
 
-    def save_template(self, template, template_fields = {}):
+    def save_template(self, template, template_fields=None):
+        template_fields = template_fields or {}
         data = template_fields.copy()
         data['template'] = template
         return self.api_post('template', data)
 
-    def get_list(self, list, options = {}):
+    def get_list(self, list, options=None):
         """
         Download a list. Obviously, this can potentially be a very large download.
         'txt' is default format since, its more compact as compare to others
         http://docs.sailthru.com/api/list
         """
+        options = options or {}
         data = options.copy()
         data['list'] = list
         return self.api_get('list', data)
@@ -349,7 +364,7 @@ class SailthruClient(object):
             data['names'] = 1
         return self.api_post('contacts', data)
 
-    def push_content(self, title, url, date=None, tags=None, vars={}):
+    def push_content(self, title, url, date=None, tags=None, vars=None):
         """
         Push a new piece of content to Sailthru, triggering any applicable alerts.
         @param title: title string for the content
@@ -358,6 +373,7 @@ class SailthruClient(object):
         @param tags: list or comma separated string values
         @param vars: replaceable vars dictionary
         """
+        vars = vars or {}
         data = {}
         data['title'] = title
         data['url'] = url
@@ -375,7 +391,7 @@ class SailthruClient(object):
         """
         return self.api_get('alert', {'email': email})
 
-    def save_alert(self, email, type, template, when=None, options={}):
+    def save_alert(self, email, type, template, when=None, options=None):
         """
         Add a new alert to a user. You can add either a realtime or a summary alert (daily/weekly).
         http://docs.sailthru.com/api/alert
@@ -397,6 +413,7 @@ class SailthruClient(object):
         @param when: date string required for summary alert (daily/weekly)
         @param options: dictionary value for adding tags, max price, min price, match type
         """
+        options = options or {}
         data = options.copy()
         data['email'] = email
         data['type'] = type
@@ -414,7 +431,7 @@ class SailthruClient(object):
         data['alert_id'] = alert_id
         return self.api_delete('alert', data)
 
-    def purchase(self, email, items={}, incomplete=None, message_id=None, options={}):
+    def purchase(self, email, items=None, incomplete=None, message_id=None, options=None):
         """
         Record that a user has made a purchase, or has added items to their purchase total.
         http://docs.sailthru.com/api/purchase
@@ -423,6 +440,8 @@ class SailthruClient(object):
         @param message_id: message_id string
         @param options
         """
+        items = items or {}
+        options = options or {}
         data = options.copy()
         data['email'] = email
         data['items'] = items
@@ -446,11 +465,12 @@ class SailthruClient(object):
         data['stat'] = 'list'
         return self._stats(data)
 
-    def stats_blast(self, blast_id=None, start_date=None, end_date=None, options={}):
+    def stats_blast(self, blast_id=None, start_date=None, end_date=None, options=None):
         """
         Retrieve information about a particular blast or aggregated information from all of blasts over a specified date range.
         http://docs.sailthru.com/api/stat
         """
+        options = options or {}
         data = options.copy()
         if blast_id is not None:
             data['blast_id'] = blast_id
@@ -600,12 +620,13 @@ class SailthruClient(object):
         """
         return self._api_request(action, data, 'GET')
 
-    def api_post(self, action, data, binary_data_param = []):
+    def api_post(self, action, data, binary_data_param=None):
         """
         Perform an HTTP POST request, using the shared-secret auth hash.
         @param action: API action call
         @param data: dictionary values
         """
+        binary_data_param = binary_data_param or []
         if len(binary_data_param) > 0:
             return self.api_post_multipart(action, data, binary_data_param)
         else:
@@ -644,7 +665,8 @@ class SailthruClient(object):
         """
         return self._http_request(self.api_url+'/'+action, self._prepare_json_payload(data), request_type)
     
-    def _http_request(self, url, data, method, file_data = {}):
+    def _http_request(self, url, data, method, file_data=None):
+        file_data = file_data or {}
         return sailthru_http_request(url, data, method, file_data)
 
     def _prepare_json_payload(self, data):
