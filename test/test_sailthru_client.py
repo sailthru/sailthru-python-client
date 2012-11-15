@@ -2,6 +2,7 @@
 """
 Tests for sailthru_client
 """
+from mock import MagicMock
 import unittest
 import sys
 
@@ -9,6 +10,7 @@ import sys
 
 sys.path[0:0] = [""]
 
+import sailthru.sailthru_http
 from sailthru import sailthru_client as c
 
 class TestSailthruClientFunctions(unittest.TestCase):
@@ -40,7 +42,7 @@ class TestSailthruClient(unittest.TestCase):
         api_key = 'test'
         api_secret = 'super_secret'
         self.client = c.SailthruClient(api_key, api_secret)
-
+ 
     def test_check_for_valid_actions(self):
         required_keys = ['email', 'action', 'sig']
         invalid_params_dict = {'email': 'praj@sailthru.com', 'action': 'optout', 'sig__': '125342352'}
@@ -54,7 +56,23 @@ class TestSailthruClient(unittest.TestCase):
         
         valid_params_dict = {'email': 'praj@sailthru.com', 'action': 'optout', 'sig': '125342352'}
         self.assertTrue(self.client.check_for_valid_postback_actions(required_keys, valid_params_dict))
-    
+
+    def test_receive_verify_post(self):
+        mock_http_request = MagicMock()
+        mock_http_request.return_value = '{"email":"menglander@sailthru.com"}'
+
+        self.client._http_request = mock_http_request
+
+        post_params = {}
+        post_params['action'] = 'verify'
+        post_params['email'] = 'menglander@sailthru.com'
+        post_params['send_id'] = 'abc123'
+        post_params['sig'] = 'sighelloworld'
+
+        actual = self.client.receive_verify_post(post_params)
+        expected = True
+        self.assertEqual(actual, expected)
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(TestSailthruClientFunctions('test_default_size'))
