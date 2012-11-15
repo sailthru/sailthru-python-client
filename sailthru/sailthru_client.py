@@ -504,6 +504,9 @@ class SailthruClient(object):
         sig = post_params['sig']
         del post_params['sig']
 
+        if sig != get_signature_hash(post_params, self.secret):
+            return False
+
         send_response = self.get_send(post_params['send_id'])
         try:
             send_response = json.loads(send_response)
