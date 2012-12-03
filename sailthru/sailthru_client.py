@@ -156,7 +156,7 @@ class SailthruClient(object):
         @param list: mailing list name to send to
         @param schedule_time:  when the blast should send. Dates in the past will be scheduled for immediate delivery. Any English textual datetime format known to PHP's strtotime function is acceptable, such as 2009-03-18 23:57:22 UTC, now (immediate delivery), +3 hours (3 hours from now), or February 14, 9:30 EST. Be sure to specify a timezone if you use an exact time.
         @param from_name: name appearing in the "From" of the email
-        @param from_email: email address to use as the "from" – choose from any of your verified emails
+        @param from_email: email address to use as the "from" - choose from any of your verified emails
         @param subject: subject line of the email
         @param content_html: HTML format version of the email
         @param content_text: Text format version of the email
@@ -227,7 +227,7 @@ class SailthruClient(object):
         @param list: blast list
         @param schedule_time: new schedule time
         @param from_name: name appearing in the "From" of the email
-        @param from_email: email address to use as the "from" – choose from any of your verified emails
+        @param from_email: email address to use as the "from" - choose from any of your verified emails
         @param subject: subject line of the email
         @param content_html: HTML format version of the email
         @param content_text: Text format version of the email
