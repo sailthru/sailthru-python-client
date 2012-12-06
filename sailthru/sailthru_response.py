@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
-
 try:
     import simplejson as json
 except ImportError:
     import json
+
 
 class SailthruResponse(object):
     def __init__(self, response):
@@ -18,7 +17,7 @@ class SailthruResponse(object):
     def is_ok(self):
         return self.json_error is not None and not "error" in self.json.keys()
 
-    def get_body(self, as_dictionary = True):
+    def get_body(self, as_dictionary=True):
         if as_dictionary is True:
             return self.json
         else:
