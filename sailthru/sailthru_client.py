@@ -1,10 +1,11 @@
-# -*- coding: utf-8 -*-
-
 import hashlib
 from sailthru_http import sailthru_http_request
 
-try: import simplejson as json
-except ImportError: import json
+try:
+    import simplejson as json
+except ImportError:
+    import json
+
 
 def extract_params(params):
     """
@@ -21,6 +22,7 @@ def extract_params(params):
         values.append(params)
     return values
 
+
 def get_signature_string(params, secret):
     """
     Returns the unhashed signature string (secret + sorted list of param values) for an API call.
@@ -32,6 +34,7 @@ def get_signature_string(params, secret):
         str_list.append(str(item))
     str_list.sort()
     return secret + "".join(str_list)
+
 
 def get_signature_hash(params, secret):
     """
@@ -61,7 +64,8 @@ class SailthruClient(object):
     def __init__(self, api_key, secret, api_url=None):
         self.api_key = api_key
         self.secret = secret
-        self.api_url = api_url if (api_url is not None) else 'https://api.sailthru.com'
+        self.api_url = api_url if (
+            api_url is not None) else 'https://api.sailthru.com'
         self.user_agent = 'Sailthru API Python Client'
 
     def send(self, template, email, _vars=None, options=None, schedule_time=None):
@@ -331,7 +335,7 @@ class SailthruClient(object):
         """
         Get metadata for all lists
         """
-        data = {'list': ''} #blank list
+        data = {'list': ''}  # blank list
         return self.api_get('list', data)
 
     def save_list(self, list, emails):
@@ -405,7 +409,8 @@ class SailthruClient(object):
             alert_options['match']['type'] = 'shoes'
             alert_options['min']['price'] = 20000 #cents
             alert_options['tags'] = ['red', 'blue', 'green']
-            response = client.save_alert(email, type, template, when, alert_options)
+            response = client.save_alert(
+                email, type, template, when, alert_options)
 
         @param email: Email value
         @param type: daily|weekly|realtime
@@ -568,7 +573,7 @@ class SailthruClient(object):
         """
         if type(post_params) is dict:
             required_params = ['action', 'email', 'sig']
-            if self.check_for_valid_postback_actions(required_params, post_params ) is False:
+            if self.check_for_valid_postback_actions(required_params, post_params) is False:
                 return False
         else:
             return False
@@ -651,8 +656,8 @@ class SailthruClient(object):
         json_payload = self._prepare_json_payload(data)
 
         print data
-        
-        return self._http_request(self.api_url+'/'+action, json_payload, "POST", binary_data)
+
+        return self._http_request(self.api_url + '/' + action, json_payload, "POST", binary_data)
 
     def api_delete(self, action, data):
         """
@@ -666,8 +671,8 @@ class SailthruClient(object):
         """
         Make Request to Sailthru API with given data and api key, format and signature hash
         """
-        return self._http_request(self.api_url+'/'+action, self._prepare_json_payload(data), request_type)
-    
+        return self._http_request(self.api_url + '/' + action, self._prepare_json_payload(data), request_type)
+
     def _http_request(self, url, data, method, file_data=None):
         file_data = file_data or {}
         return sailthru_http_request(url, data, method, file_data)
