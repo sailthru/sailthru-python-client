@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-try: 
+try:
     import simplejson as json
-except ImportError: 
+except ImportError:
     import json
 
 class SailthruResponse(object):
@@ -41,15 +41,9 @@ class SailthruResponse(object):
             code = self.json["error"]
             msg = self.json["errormsg"]
 
-        return SailthruResponseError(msg, code)
+        return SailthruResponseError(
+            "Response failed with code %s and message: %s" % (code, msg))
 
-class SailthruResponseError(object):
-    def __init__(self, message, code):
-        self.message = message
-        self.code = code
 
-    def get_message(self):
-       return self.message
-
-    def get_error_code(self):
-        return self.code
+class SailthruResponseError(Exception):
+    pass
