@@ -44,4 +44,14 @@ class SailthruResponse(object):
         return SailthruResponseError(msg, code)
 
 class SailthruResponseError(Exception):
-    pass
+    def __init__(self, message, code):
+        super(SailthruResponseError, self).__init__(message, code)
+        self.message = message
+        self.code = code
+
+    def get_message(self):
+        return self.message
+
+    def get_error_code(self):
+        return self.code
+
