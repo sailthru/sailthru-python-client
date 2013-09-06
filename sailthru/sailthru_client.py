@@ -148,24 +148,24 @@ class SailthruClient(object):
         data['send_vars'] = send_vars
         return self.api_post('email', data)
 
-    def get_user(self, id, options=None):
+    def get_user(self, idvalue, options=None):
         """
         get user by a given id
         http://getstarted.sailthru.com/api/user
         """
         options = options or {}
         data = options.copy
-        data['id'] = id
+        data['id'] = idvalue
         return self.api_get('user', data)
 
-    def save_user(self, id, options=None):
+    def save_user(self, idvalue, options=None):
         """
         save user by a given id
         http://getstarted.sailthru.com/api/user
         """
         options = options or {}
         data = options.copy
-        data['id'] = id
+        data['id'] = idvalue
         return self.api_post('user', data)
 
     def schedule_blast(self, name, list, schedule_time, from_name, from_email, subject, content_html, content_text, options=None):
