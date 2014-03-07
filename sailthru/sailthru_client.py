@@ -529,7 +529,8 @@ class SailthruClient(object):
 
         send_response = self.get_send(post_params['send_id'])
         try:
-            send_response = json.loads(send_response)
+            send_response = send_response.get_body()
+            send_response = json.JSONEncoder().encode(send_response)
             if not 'email' in send_response:
                 return False
         except json.decoder.JSONDecodeError as json_err:
@@ -587,7 +588,8 @@ class SailthruClient(object):
             send_id = post_params['send_id']
             send_response = self.get_send(send_id)
             try:
-                send_response = json.loads(send_response)
+                send_response = send_response.get_body()
+                send_response = json.JSONEncoder().encode(send_response)
                 if not 'email' in send_response:
                     return False
             except json.decoder.JSONDecodeError as json_err:
@@ -598,7 +600,8 @@ class SailthruClient(object):
             blast_id = post_params['blast_id']
             blast_response = self.get_blast(blast_id)
             try:
-                blast_response = json.loads(blast_response)
+                blast_response = send_response.get_body()
+                blast_response = json.JSONEncoder().encode(send_response)
                 if 'error' in blast_response:
                     return False
             except json.decoder.JSONDecodeError as json_err:
