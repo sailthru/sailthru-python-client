@@ -320,8 +320,7 @@ class SailthruClient(object):
         """
         get metadata for all user templates
         """
-        data = {'template': ''}
-        return self.api_get('template', data)
+        return self.api_get('template', {})
 
     def delete_template(self, template_name):
         """
