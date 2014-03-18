@@ -336,7 +336,7 @@ class SailthruClient(object):
         data['template'] = template
         return self.api_post('template', data)
 
-    def get_list(self, list, options=None):
+    def get_list(self, list_name, options=None):
         """
         Download a list. Obviously, this can potentially be a very large download.
         'txt' is default format since, its more compact as compare to others
@@ -344,7 +344,7 @@ class SailthruClient(object):
         """
         options = options or {}
         data = options.copy()
-        data['list'] = list
+        data['list'] = list_name
         return self.api_get('list', data)
 
     def get_lists(self):
@@ -653,8 +653,6 @@ class SailthruClient(object):
                 del data[param]
         json_payload = self._prepare_json_payload(data)
 
-        print data
-        
         return self._http_request(self.api_url+'/'+action, json_payload, "POST", binary_data)
 
     def api_delete(self, action, data):
@@ -670,7 +668,7 @@ class SailthruClient(object):
         Make Request to Sailthru API with given data and api key, format and signature hash
         """
         return self._http_request(self.api_url+'/'+action, self._prepare_json_payload(data), request_type)
-    
+
     def _http_request(self, url, data, method, file_data=None):
         file_data = file_data or {}
         return sailthru_http_request(url, data, method, file_data)
