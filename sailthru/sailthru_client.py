@@ -653,8 +653,6 @@ class SailthruClient(object):
                 del data[param]
         json_payload = self._prepare_json_payload(data)
 
-        print data
-
         return self._http_request(self.api_url+'/'+action, json_payload, "POST", binary_data)
 
     def api_delete(self, action, data):
