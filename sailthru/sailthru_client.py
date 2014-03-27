@@ -3,8 +3,10 @@
 import hashlib
 from sailthru_http import sailthru_http_request
 
-try: import simplejson as json
-except ImportError: import json
+try: 
+    import simplejson as json
+except ImportError:
+    import json
 
 def extract_params(params):
     """
