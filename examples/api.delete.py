@@ -15,13 +15,13 @@ try:
     if response.is_ok():
         body = response.get_body()
         # handle body which is of type dictionary
-        print body
+        print (body)
     else:
         error = response.get_error()
-        print "Error: " + error.get_message()
-        print "Status Code: " + str(response.get_status_code())
-        print "Error Code: " + str(error.get_error_code())
-except SailthruClientError, e:
+        print ("Error: " + error.get_message())
+        print ("Status Code: " + str(response.get_status_code()))
+        print ("Error Code: " + str(error.get_error_code()))
+except SailthruClientError as e:
     # Handle exceptions
-    print "Exception"
-    print e
+    print ("Exception")
+    print (e)
