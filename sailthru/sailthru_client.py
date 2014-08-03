@@ -66,7 +66,7 @@ class SailthruClient(object):
         self.api_url = api_url if (api_url is not None) else 'https://api.sailthru.com'
         self.user_agent = 'Sailthru API Python Client'
 
-    def send(self, template, email, _vars=None, options=None, limit=None, schedule_time=None):
+    def send(self, template, email, _vars=None, options=None, schedule_time=None, limit=None):
         """
         Remotely send an email template to a single email address.
         http://docs.sailthru.com/api/send
