@@ -526,6 +526,7 @@ class SailthruClient(object):
             return False
 
         sig = post_params['sig']
+        post_params = post_params.copy()
         del post_params['sig']
 
         if sig != get_signature_hash(post_params, self.secret):
@@ -560,6 +561,7 @@ class SailthruClient(object):
             return False
 
         signature = post_params['sig']
+        post_params = post_params.copy()
         del post_params['sig']
 
         if signature != get_signature_hash(post_params, self.secret):
@@ -582,6 +584,7 @@ class SailthruClient(object):
             return False
 
         signature = post_params['sig']
+        post_params = post_params.copy()
         del post_params['sig']
 
         if signature != get_signature_hash(post_params, self.secret):
@@ -654,6 +657,7 @@ class SailthruClient(object):
         for param in binary_data_param:
             if param in data_keys:
                 binary_data[param] = open(data[param], 'r')
+                data = data.copy()
                 del data[param]
         json_payload = self._prepare_json_payload(data)
 
