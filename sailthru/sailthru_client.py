@@ -342,13 +342,11 @@ class SailthruClient(object):
 
     def get_list(self, list_name, options=None):
         """
-        Download a list. Obviously, this can potentially be a very large download.
-        'txt' is default format since, its more compact as compare to others
-        http://docs.sailthru.com/api/list
+        Get detailed metadata information about a list. 
         """
         options = options or {}
-        data = options.copy()
-        data['list'] = list_name
+        data = {'list': list_name}
+        data.update(options)
         return self.api_get('list', data)
 
     def get_lists(self):
