@@ -3,7 +3,7 @@
 import hashlib
 from sailthru_http import sailthru_http_request
 
-try: 
+try:
     import simplejson as json
 except ImportError:
     import json
@@ -342,7 +342,7 @@ class SailthruClient(object):
 
     def get_list(self, list_name, options=None):
         """
-        Get detailed metadata information about a list. 
+        Get detailed metadata information about a list.
         """
         options = options or {}
         data = {'list': list_name}
@@ -605,8 +605,8 @@ class SailthruClient(object):
             blast_id = post_params['blast_id']
             blast_response = self.get_blast(blast_id)
             try:
-                blast_response = send_response.get_body()
-                blast_response = json.JSONEncoder().encode(send_response)
+                blast_response = blast_response.get_body()
+                blast_response = json.JSONEncoder().encode(blast_response)
                 if 'error' in blast_response:
                     return False
             except json.decoder.JSONDecodeError as json_err:
