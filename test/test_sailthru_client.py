@@ -42,7 +42,7 @@ class TestSailthruClient(unittest.TestCase):
         api_key = 'test'
         api_secret = 'super_secret'
         self.client = c.SailthruClient(api_key, api_secret)
- 
+
     def test_check_for_valid_actions(self):
         required_keys = ['email', 'action', 'sig']
         invalid_params_dict = {'email': 'praj@sailthru.com', 'action': 'optout', 'sig__': '125342352'}
@@ -53,15 +53,19 @@ class TestSailthruClient(unittest.TestCase):
 
         empty_list = []
         self.assertFalse(self.client.check_for_valid_postback_actions(required_keys, empty_list))
-        
+
         valid_params_dict = {'email': 'praj@sailthru.com', 'action': 'optout', 'sig': '125342352'}
         self.assertTrue(self.client.check_for_valid_postback_actions(required_keys, valid_params_dict))
 
     def test_receive_verify_post(self):
         mock_http_request = MagicMock()
-        mock_http_request.return_value = '{"email":"menglander@sailthru.com"}'
+        mock_http_request.return_value.get_body.return_value = '{"email":"menglander@sailthru.com"}'
 
         self.client._http_request = mock_http_request
+
+        mock_get_signature_hash = MagicMock()
+        mock_get_signature_hash.return_value = 'sighelloworld'
+        sailthru.sailthru_client.get_signature_hash = mock_get_signature_hash
 
         post_params = {}
         post_params['action'] = 'verify'

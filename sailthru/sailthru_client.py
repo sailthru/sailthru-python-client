@@ -531,15 +531,18 @@ class SailthruClient(object):
             return False
 
         send_response = self.get_send(post_params['send_id'])
-        try:
-            send_response = send_response.get_body()
-            send_response = json.JSONEncoder().encode(send_response)
-            if not 'email' in send_response:
-                return False
-        except json.decoder.JSONDecodeError as json_err:
-            return False
 
-        if send_response['email'] != post_params['email']:
+        try:
+            send_body = send_response.get_body()
+            send_json = json.loads(send_body)
+            if not 'email' in send_body:
+                return False
+            if send_json['email'] != post_params['email']:
+                return False
+
+            send_body = json.JSONEncoder().encode(send_body)
+
+        except json.decoder.JSONDecodeError as json_err:
             return False
 
         return True
