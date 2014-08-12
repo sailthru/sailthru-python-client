@@ -1,22 +1,23 @@
 # -*- coding: utf-8 -*-
 
-try: 
+try:
     import simplejson as json
-except ImportError: 
+except ImportError:
     import json
 
 class SailthruResponse(object):
     def __init__(self, response):
         self.response = response
         self.json_error = False
+
         try:
             self.json = json.loads(response.content)
-        except json.decoder as e:
+        except ValueError as e:
             self.json = None
-            self.json_error = str(e)
+            self.json_error = unicode(e)
 
     def is_ok(self):
-        return self.json_error is not None and not "error" in self.json.keys()
+        return self.json_error is not None and self.json and not "error" in self.json.keys()
 
     def get_body(self, as_dictionary = True):
         if as_dictionary is True:

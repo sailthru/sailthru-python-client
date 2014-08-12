@@ -536,7 +536,7 @@ class SailthruClient(object):
             send_response = json.JSONEncoder().encode(send_response)
             if not 'email' in send_response:
                 return False
-        except json.decoder.JSONDecodeError as json_err:
+        except json.decoder.JSONDecodeError:
             return False
 
         if send_response['email'] != post_params['email']:
@@ -609,7 +609,7 @@ class SailthruClient(object):
                 blast_response = json.JSONEncoder().encode(blast_response)
                 if 'error' in blast_response:
                     return False
-            except json.decoder.JSONDecodeError as json_err:
+            except json.decoder.JSONDecodeError:
                 return False
 
         return True
