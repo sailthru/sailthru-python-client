@@ -14,7 +14,7 @@ class SailthruResponse(object):
             self.json = json.loads(response.content)
         except ValueError as e:
             self.json = None
-            self.json_error = unicode(e)
+            self.json_error = str(e)
 
     def is_ok(self):
         return self.json_error is not None and self.json and not "error" in self.json.keys()
