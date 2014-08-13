@@ -61,9 +61,13 @@ class TestSailthruClient(unittest.TestCase):
 
     def test_receive_verify_post(self):
         mock_http_request = MagicMock()
-        mock_http_request.return_value = '{"email":"menglander@sailthru.com"}'
+        mock_http_request.return_value.get_body.return_value = '{"email":"menglander@sailthru.com"}'
 
         self.client._http_request = mock_http_request
+
+        mock_get_signature_hash = MagicMock()
+        mock_get_signature_hash.return_value = 'sighelloworld'
+        sailthru.sailthru_client.get_signature_hash = mock_get_signature_hash
 
         post_params = {}
         post_params['action'] = 'verify'
