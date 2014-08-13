@@ -542,7 +542,7 @@ class SailthruClient(object):
 
             send_body = json.JSONEncoder().encode(send_body)
 
-        except json.decoder.JSONDecodeError as json_err:
+        except json.decoder.JSONDecodeError:
             return False
 
         return True
@@ -612,7 +612,7 @@ class SailthruClient(object):
                 blast_response = json.JSONEncoder().encode(blast_response)
                 if 'error' in blast_response:
                     return False
-            except json.decoder.JSONDecodeError as json_err:
+            except json.decoder.JSONDecodeError:
                 return False
 
         return True

@@ -13,6 +13,7 @@ sys.path[0:0] = [""]
 import sailthru.sailthru_http
 from sailthru import sailthru_client as c
 
+
 class TestSailthruClientFunctions(unittest.TestCase):
     def setUp(self):
         pass
@@ -24,6 +25,7 @@ class TestSailthruClientFunctions(unittest.TestCase):
         self.assertEqual(extracted, expected)
 
     def test_extract_params_with_embedded_dictionary(self):
+
         _dict = {'US': [{'New York': ['Queens', 'New York', 'Brooklyn']}, 'Virginia', 'Washington DC', 'Maryland'], 'Canada': ['Ontario', 'Quebec', 'British Columbia']}
         expected = sorted(['Queens', 'New York', 'Brooklyn', 'Virginia', 'Washington DC', 'Maryland', 'Ontario', 'Quebec', 'British Columbia'])
         extracted = sorted(c.extract_params(_dict))
