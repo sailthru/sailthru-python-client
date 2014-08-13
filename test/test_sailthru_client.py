@@ -13,6 +13,7 @@ sys.path[0:0] = [""]
 import sailthru.sailthru_http
 from sailthru import sailthru_client as c
 
+
 class TestSailthruClientFunctions(unittest.TestCase):
     def setUp(self):
         pass
@@ -24,6 +25,7 @@ class TestSailthruClientFunctions(unittest.TestCase):
         self.assertEqual(extracted, expected)
 
     def test_extract_params_with_embedded_dictionary(self):
+
         _dict = {'US': [{'New York': ['Queens', 'New York', 'Brooklyn']}, 'Virginia', 'Washington DC', 'Maryland'], 'Canada': ['Ontario', 'Quebec', 'British Columbia']}
         expected = sorted(['Queens', 'New York', 'Brooklyn', 'Virginia', 'Washington DC', 'Maryland', 'Ontario', 'Quebec', 'British Columbia'])
         extracted = sorted(c.extract_params(_dict))
@@ -42,7 +44,7 @@ class TestSailthruClient(unittest.TestCase):
         api_key = 'test'
         api_secret = 'super_secret'
         self.client = c.SailthruClient(api_key, api_secret)
- 
+
     def test_check_for_valid_actions(self):
         required_keys = ['email', 'action', 'sig']
         invalid_params_dict = {'email': 'praj@sailthru.com', 'action': 'optout', 'sig__': '125342352'}
@@ -53,7 +55,7 @@ class TestSailthruClient(unittest.TestCase):
 
         empty_list = []
         self.assertFalse(self.client.check_for_valid_postback_actions(required_keys, empty_list))
-        
+
         valid_params_dict = {'email': 'praj@sailthru.com', 'action': 'optout', 'sig': '125342352'}
         self.assertTrue(self.client.check_for_valid_postback_actions(required_keys, valid_params_dict))
 
