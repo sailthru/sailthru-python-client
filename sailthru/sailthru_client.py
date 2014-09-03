@@ -595,6 +595,8 @@ class SailthruClient(object):
         if 'send_id' in post_params:
             send_id = post_params['send_id']
             send_response = self.get_send(send_id)
+            if not send_response.is_ok():
+                return False
             send_obj = send_response.get_body()
             if not send_obj or not 'email' in send_obj:
                 return False
@@ -603,6 +605,8 @@ class SailthruClient(object):
         if 'blast_id' in post_params:
             blast_id = post_params['blast_id']
             blast_response = self.get_blast(blast_id)
+            if not blast_response.is_ok():
+                return False
             blast_obj = blast_response.get_body()
             if not blast_obj:
                 return False
