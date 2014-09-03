@@ -85,7 +85,7 @@ class TestSailthruClient(unittest.TestCase):
     def test_hardbounce_invalid_json(self):
         """ Test the json returned is not valid """
         mock_http_request = MagicMock()
-        mock_http_request.return_value.get_body.return_value = '{"email"==="menglander@sailthru.com"}'
+        mock_http_request.return_value.get_body.return_value = None
 
         self.client._http_request = mock_http_request
 
@@ -106,7 +106,7 @@ class TestSailthruClient(unittest.TestCase):
     def test_hardbounce_blast_invalid_json(self):
         """ Test the json returned is not valid """
         mock_http_request = MagicMock()
-        mock_http_request.return_value.get_body.return_value = '{"email"==="menglander@sailthru.com"}'
+        mock_http_request.return_value.get_body.return_value = None
 
         self.client._http_request = mock_http_request
 
