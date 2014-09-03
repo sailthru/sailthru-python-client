@@ -595,24 +595,22 @@ class SailthruClient(object):
         if 'send_id' in post_params:
             send_id = post_params['send_id']
             send_response = self.get_send(send_id)
+            send_response = send_response.get_body()
             try:
-                send_response = send_response.get_body()
-                send_response = json.JSONEncoder().encode(send_response)
-                if not 'email' in send_response:
-                    return False
-            except json.decoder.JSONDecodeError as json_err:
+                send_obj = json.JSONDecoder().decode(send_response)
+            except ValueError:
+                return False
+            if not 'email' in send_obj:
                 return False
 
         # for blasts
         if 'blast_id' in post_params:
             blast_id = post_params['blast_id']
             blast_response = self.get_blast(blast_id)
+            blast_response = blast_response.get_body()
             try:
-                blast_response = blast_response.get_body()
-                blast_response = json.JSONEncoder().encode(blast_response)
-                if 'error' in blast_response:
-                    return False
-            except json.decoder.JSONDecodeError:
+                json.JSONDecoder().decode(blast_response)
+            except ValueError:
                 return False
 
         return True
