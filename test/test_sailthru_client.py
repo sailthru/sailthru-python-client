@@ -26,8 +26,10 @@ class TestSailthruClientFunctions(unittest.TestCase):
 
     def test_extract_params_with_embedded_dictionary(self):
 
-        _dict = {'US': [{'New York': ['Queens', 'New York', 'Brooklyn']}, 'Virginia', 'Washington DC', 'Maryland'], 'Canada': ['Ontario', 'Quebec', 'British Columbia']}
-        expected = sorted(['Queens', 'New York', 'Brooklyn', 'Virginia', 'Washington DC', 'Maryland', 'Ontario', 'Quebec', 'British Columbia'])
+        _dict = {'US': [{'New York': ['Queens', 'New York', 'Brooklyn']}, 'Virginia', 'Washington DC', 'Maryland'],
+                 'Canada': ['Ontario', 'Quebec', 'British Columbia']}
+        expected = sorted(['Queens', 'New York', 'Brooklyn', 'Virginia', 'Washington DC', 'Maryland', 'Ontario',
+                           'Quebec', 'British Columbia'])
         extracted = sorted(c.extract_params(_dict))
         self.assertEqual(extracted, expected)
 
@@ -38,6 +40,7 @@ class TestSailthruClientFunctions(unittest.TestCase):
         expected_list.sort()
         expected = secret + "".join(expected_list)
         self.assertEqual(c.get_signature_string(_dict, secret), expected)
+
 
 class TestSailthruClient(unittest.TestCase):
     def setUp(self):
@@ -78,6 +81,69 @@ class TestSailthruClient(unittest.TestCase):
         actual = self.client.receive_verify_post(post_params)
         expected = True
         self.assertEqual(actual, expected)
+
+    def test_hardbounce_invalid_json(self):
+        """ Test the json returned is not valid """
+        mock_http_request = MagicMock()
+        mock_http_request.return_value.get_body.return_value = None
+
+        self.client._http_request = mock_http_request
+
+        mock_get_signature_hash = MagicMock()
+        mock_get_signature_hash.return_value = 'sighelloworld'
+        sailthru.sailthru_client.get_signature_hash = mock_get_signature_hash
+
+        post_params = {}
+        post_params['action'] = 'hardbounce'
+        post_params['email'] = 'menglander@sailthru.com'
+        post_params['send_id'] = 'abc123'
+        post_params['sig'] = 'sighelloworld'
+
+        actual = self.client.receive_hardbounce_post(post_params)
+        expected = False
+        self.assertEqual(actual, expected)
+
+    def test_hardbounce_blast_invalid_json(self):
+        """ Test the json returned is not valid """
+        mock_http_request = MagicMock()
+        mock_http_request.return_value.get_body.return_value = None
+
+        self.client._http_request = mock_http_request
+
+        mock_get_signature_hash = MagicMock()
+        mock_get_signature_hash.return_value = 'sighelloworld'
+        sailthru.sailthru_client.get_signature_hash = mock_get_signature_hash
+
+        post_params = {}
+        post_params['action'] = 'hardbounce'
+        post_params['email'] = 'menglander@sailthru.com'
+        post_params['blast_id'] = 'abc123'
+        post_params['sig'] = 'sighelloworld'
+
+        actual = self.client.receive_hardbounce_post(post_params)
+        expected = False
+        self.assertEqual(actual, expected)
+
+    def test_hardbounce_valid_json(self):
+        mock_http_request = MagicMock()
+        mock_http_request.return_value.get_body.return_value = '{"email": "menglander@sailthru.com"}'
+
+        self.client._http_request = mock_http_request
+
+        mock_get_signature_hash = MagicMock()
+        mock_get_signature_hash.return_value = 'sighelloworld'
+        sailthru.sailthru_client.get_signature_hash = mock_get_signature_hash
+
+        post_params = {}
+        post_params['action'] = 'hardbounce'
+        post_params['email'] = 'menglander@sailthru.com'
+        post_params['send_id'] = 'abc123'
+        post_params['sig'] = 'sighelloworld'
+
+        actual = self.client.receive_hardbounce_post(post_params)
+        expected = True
+        self.assertEqual(actual, expected)
+
 
 def suite():
     suite = unittest.TestSuite()
