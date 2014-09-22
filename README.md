@@ -1,5 +1,5 @@
 sailthru-python-client
-====================
+======================
 
 
 For installation instructions, documentation, and examples please visit:
@@ -9,7 +9,7 @@ A simple client library to remotely access the `Sailthru REST API` as per [http:
 
 Python binding for [Sailthru API](http://getstarted.sailthru.com/api) based on [Requests](https://github.com/kennethreitz/requests)
 
-It will make request in `JSON` format.
+It will make requests in `JSON` format.
 
 Tested with `Python 2.7.x` but it should work with 2.6.x also.
 
