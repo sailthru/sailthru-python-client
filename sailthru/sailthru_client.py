@@ -79,13 +79,13 @@ class SailthruClient(object):
         """
         _vars = _vars or {}
         options = options or {}
-        limit = limit or {}
         data = {}
         data['template'] = template
         data['email'] = email
         data['vars'] = _vars
         data['options'] = options.copy()
-        data['limit'] = limit.copy()
+        if limit:
+            data['limit'] = limit.copy()
         if schedule_time is not None:
             data['schedule_time'] = schedule_time
         return self.api_post('send', data)
