@@ -8,7 +8,7 @@ except ImportError:
 class SailthruResponse(object):
     def __init__(self, response):
         self.response = response
-        self.json_error = False
+        self.json_error = None
 
         try:
             self.json = json.loads(response.content)
@@ -17,10 +17,10 @@ class SailthruResponse(object):
             self.json_error = str(e)
 
     def is_ok(self):
-        return self.json_error is not None and self.json and not "error" in self.json.keys()
+        return self.json and not set(["error", "errormsg"]) == set(self.json.keys())
 
     def get_body(self, as_dictionary = True):
-        if as_dictionary is True:
+        if as_dictionary:
             return self.json
         else:
             return self.response.content
@@ -35,12 +35,12 @@ class SailthruResponse(object):
         if self.is_ok():
             return False
 
-        if self.json_error is not False:
-            code = 0
-            msg = self.json_error
-        else:
+        if self.json_error is None:
             code = self.json["error"]
             msg = self.json["errormsg"]
+        else:
+            code = 0
+            msg = self.json_error
 
         return SailthruResponseError(msg, code)
 
