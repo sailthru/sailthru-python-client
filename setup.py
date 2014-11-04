@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(name='sailthru-client', 
-    version='2.1.6',
+    version='2.1.7',
     packages=find_packages(),
     description='Python client for Sailthru API',
     long_description=open('README.md').read(),
