@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
-from __future__ import absolute_import, division, print_function, with_statement, unicode_literals
 
-import json
+try:
+    import json
+except:
+    import simplejson as json
 
 class SailthruResponse(object):
     def __init__(self, response):
