@@ -1,6 +1,8 @@
-from sailthru_client import SailthruClient
-from sailthru_error import SailthruClientError
-from sailthru_response import SailthruResponse, SailthruResponseError
+from __future__ import absolute_import, division, print_function, with_statement, unicode_literals
+
+from .sailthru_client import SailthruClient
+from .sailthru_error import SailthruClientError
+from .sailthru_response import SailthruResponse, SailthruResponseError
 
 __author__ = 'Prajwal Tuladhar'
 __doc__ = 'Python binding for Sailthru API based on Request'
