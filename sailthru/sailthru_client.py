@@ -33,7 +33,8 @@ def get_signature_string(params, secret):
     for item in extract_params(params):
         str_list.append(str(item))
     str_list.sort()
-    return secret + "".join(str_list)
+
+    return (secret + "".join(str_list)).encode('utf-8')
 
 def get_signature_hash(params, secret):
     """
