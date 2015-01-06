@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 try:
-    import json
-except:
     import simplejson as json
+except ImportError:
+    import json
 
 class SailthruResponse(object):
     def __init__(self, response):
