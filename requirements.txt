@@ -1,3 +1,1 @@
-requests
-simplejson
-nose
+requests>=2.0.0

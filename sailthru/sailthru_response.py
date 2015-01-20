@@ -11,7 +11,7 @@ class SailthruResponse(object):
         self.json_error = None
 
         try:
-            self.json = json.loads(response.content)
+            self.json = response.json()
         except ValueError as e:
             self.json = None
             self.json_error = str(e)

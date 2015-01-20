@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import requests
-from sailthru.sailthru_error import SailthruClientError
-from sailthru.sailthru_response import SailthruResponse
+from .sailthru_error import SailthruClientError
+from .sailthru_response import SailthruResponse
 
 def flatten_nested_hash(hash_table):
     """
