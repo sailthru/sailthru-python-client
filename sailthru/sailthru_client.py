@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import hashlib
+import platform
 from .sailthru_http import sailthru_http_request
 
 try:
@@ -64,7 +65,7 @@ class SailthruClient(object):
         self.api_key = api_key
         self.secret = secret
         self.api_url = api_url if (api_url is not None) else 'https://api.sailthru.com'
-        self.user_agent = 'Sailthru API Python Client'
+        self.user_agent = 'Sailthru API Python Client %s; Python Version %s' % ('2.2.0', platform.python_version())
 
     def send(self, template, email, _vars=None, options=None, schedule_time=None, limit=None):
         """
@@ -488,14 +489,15 @@ class SailthruClient(object):
         data['alert_id'] = alert_id
         return self.api_delete('alert', data)
 
-    def purchase(self, email, items=None, incomplete=None, message_id=None, options=None):
+    def purchase(self, email, items=None, incomplete=None, message_id=None, options=None, extid=None):
         """
         Record that a user has made a purchase, or has added items to their purchase total.
         http://docs.sailthru.com/api/purchase
         @param email: Email string
         @param items: list of item dictionary with keys: id, title, price, qty, and url
         @param message_id: message_id string
-        @param options
+        @param extid: external ID to track purchases
+        @param options: other options that can be set as per the API documentation 
         """
         items = items or {}
         options = options or {}
@@ -506,8 +508,19 @@ class SailthruClient(object):
             data['incomplete'] = incomplete
         if message_id is not None:
             data['message_id'] = message_id
-
+        if extid is not None:
+            data['extid'] = extid
         return self.api_post('purchase', data)
+
+    def get_purchase(self, purchase_id, key='sid'):
+        """
+        Retrieve information about a purchase using the system's unique ID or a client's ID
+        @param id_: a string that represents a unique_id or an extid. 
+        @param key: a string that is either 'sid' or 'extid'. 
+        """
+        data = {'purchase_id': purchase_id,
+                'purchase_key': key}           
+        return self.api_get('purchase', data)
 
     def stats_list(self, list=None, date=None):
         """
