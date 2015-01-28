@@ -14,10 +14,10 @@ def extract_params(params):
     Extracts the values of a set of parameters, recursing into nested dictionaries.
     """
     values = []
-    if type(params) == type(dict()):
+    if isinstance(params, dict):
         for key, value in params.items():
             values.extend(extract_params(value))
-    elif type(params) == type(list()):
+    elif isinstance(params, list):
         for value in params:
             values.extend(extract_params(value))
     else:
@@ -64,7 +64,7 @@ class SailthruClient(object):
     def __init__(self, api_key, secret, api_url=None):
         self.api_key = api_key
         self.secret = secret
-        self.api_url = api_url if (api_url is not None) else 'https://api.sailthru.com'
+        self.api_url = api_url if api_url is not None else 'https://api.sailthru.com'
         self.user_agent = 'Sailthru API Python Client %s; Python Version %s' % ('2.2.0', platform.python_version())
 
     def send(self, template, email, _vars=None, options=None, schedule_time=None, limit=None):
@@ -106,7 +106,7 @@ class SailthruClient(object):
         options = options or {}
         data = {}
         data['template'] = template
-        data['email'] = ','.join(emails) if type(emails) is list else emails
+        data['email'] = ','.join(emails) if isinstance(emails, list) else emails
         data['vars'] = _vars.copy()
         data['evars'] = evars.copy()
         data['options'] = options.copy()
@@ -214,19 +214,19 @@ class SailthruClient(object):
         data['content_text'] = content_text
         return self.api_post('blast', data)
 
-    def schedule_blast_from_template(self, template, list, schedule_time, options=None):
+    def schedule_blast_from_template(self, template, list_name, schedule_time, options=None):
         """
         Schedule a mass mail blast from template
         http://docs.sailthru.com/api/blast
         @param template: template to copy from
-        @param list: List String
+        @param list_name: list to send to
         @param schedule_time
         @param options: additional optional params
         """
         options = options or {}
         data = options.copy()
         data['copy_template'] = template
-        data['list'] = list
+        data['list'] = list_name
         data['schedule_time'] = schedule_time
         return self.api_post('blast', data)
 
@@ -354,10 +354,10 @@ class SailthruClient(object):
         """
         Get metadata for all lists
         """
-        data = {'list': ''} #blank list
+        data = {'list': ''}  # blank list
         return self.api_get('list', data)
 
-    def save_list(self, list, emails):
+    def save_list(self, list_name, emails):
         """
         Upload a list. The list import job is queued and will happen shortly after the API request.
         http://docs.sailthru.com/api/list
@@ -365,16 +365,16 @@ class SailthruClient(object):
         @param emails: List of email values or comma separated string
         """
         data = {}
-        data['list'] = list
-        data['emails'] = ','.join(emails) if emails is list else emails
+        data['list'] = list_name
+        data['emails'] = ','.join(emails) if isinstance(emails, list) else emails
         return self.api_post('list', data)
 
-    def delete_list(self, list):
+    def delete_list(self, list_name):
         """
         delete given list
         http://docs.sailthru.com/api/list
         """
-        return self.api_delete('list', {'list': list})
+        return self.api_delete('list', {'list': list_name})
 
     def import_contacts(self, email, password, include_name=False):
         """
@@ -438,7 +438,7 @@ class SailthruClient(object):
         if spider:
             data['spider'] = 1
         if tags is not None:
-            data['tags'] = ",".join(tags) if type(tags) is list else tags
+            data['tags'] = ",".join(tags) if isinstance(tags, list) else tags
         if len(vars) > 0:
             data['vars'] = vars.copy()
         return self.api_post('content', data)
@@ -512,14 +512,14 @@ class SailthruClient(object):
             data['extid'] = extid
         return self.api_post('purchase', data)
 
-    def get_purchase(self, purchase_id, key='sid'):
+    def get_purchase(self, purchase_id, purchase_key='sid'):
         """
         Retrieve information about a purchase using the system's unique ID or a client's ID
         @param id_: a string that represents a unique_id or an extid. 
         @param key: a string that is either 'sid' or 'extid'. 
         """
         data = {'purchase_id': purchase_id,
-                'purchase_key': key}           
+                'purchase_key': purchase_key}           
         return self.api_get('purchase', data)
 
     def stats_list(self, list=None, date=None):
@@ -561,9 +561,9 @@ class SailthruClient(object):
         """
         Returns true if the incoming request is an authenticated verify post.
         """
-        if type(post_params) is dict:
+        if isinstance(post_params,  dict):
             required_params = ['action', 'email', 'send_id', 'sig']
-            if self.check_for_valid_postback_actions(required_params, post_params) is False:
+            if not self.check_for_valid_postback_actions(required_params, post_params):
                 return False
         else:
             return False
@@ -599,9 +599,9 @@ class SailthruClient(object):
         """
         Optout postbacks
         """
-        if type(post_params) is dict:
+        if isinstance(post_params,  dict):
             required_params = ['action', 'email', 'sig']
-            if self.check_for_valid_postback_actions(required_params, post_params) is False:
+            if not self.check_for_valid_postback_actions(required_params, post_params):
                 return False
         else:
             return False
@@ -622,9 +622,9 @@ class SailthruClient(object):
         """
         Hard bounce postbacks
         """
-        if type(post_params) is dict:
+        if isinstance(post_params, dict):
             required_params = ['action', 'email', 'sig']
-            if self.check_for_valid_postback_actions(required_params, post_params ) is False:
+            if not self.check_for_valid_postback_actions(required_params, post_params):
                 return False
         else:
             return False
@@ -685,7 +685,7 @@ class SailthruClient(object):
         @param data: dictionary values
         """
         binary_data_param = binary_data_param or []
-        if len(binary_data_param) > 0:
+        if binary_data_param:
             return self.api_post_multipart(action, data, binary_data_param)
         else:
             return self._api_request(action, data, 'POST')
