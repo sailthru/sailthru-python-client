@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import hashlib
-import platform
 from .sailthru_http import sailthru_http_request
 
 try:
@@ -65,7 +64,6 @@ class SailthruClient(object):
         self.api_key = api_key
         self.secret = secret
         self.api_url = api_url if api_url is not None else 'https://api.sailthru.com'
-        self.user_agent = 'Sailthru API Python Client %s; Python Version %s' % ('2.2.0', platform.python_version())
 
     def send(self, template, email, _vars=None, options=None, schedule_time=None, limit=None):
         """
