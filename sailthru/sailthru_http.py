@@ -37,7 +37,7 @@ def sailthru_http_request(url, data, method, file_data = None):
     params = data if method != 'POST' else None
     body = data if method == 'POST' else None
     try:
-        headers = { 'User-Agent': 'Sailthru API Python Client %s; Python Version: %s' % ('2.20', platform.python_version())}
+        headers = { 'User-Agent': 'Sailthru API Python Client %s; Python Version: %s' % ('2.2.0', platform.python_version())}
         response = requests.request(method, url, params = params, data = data, files = file_data, headers = headers, timeout = 10)
         if response.status_code is None:
             raise SailthruClientError(response.error)
