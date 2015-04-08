@@ -1,0 +1,5 @@
+2.20
+====
+- Added support for Python 3. Thanks to Yusef Simonson
+- Switched to Tox for test runner
+- Rewrote code that did not use proper Python idioms.
