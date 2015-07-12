@@ -1,10 +1,10 @@
-2.20
+2.2.0
 ====
 - Added support for Python 3. Thanks to Yusef Simonson
 - Switched to Tox for test runner
 - Rewrote code that did not use proper Python idioms.
 
-2.21
+2.2.1
 ====
 - Use simplejson to convert response into JSON. Faster than using native Python client, and more up to date.
 - Optimizations to remove dead code, use proper Python idioms.
