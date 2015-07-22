@@ -27,13 +27,11 @@ def get_signature_string(params, secret):
     """
     Returns the unhashed signature string (secret + sorted list of param values) for an API call.
     @param params: dictionary values to generate signature string
-    @param sercret: secret string
+    @param secret: secret string
     """
-    str_list = []
-    for item in extract_params(params):
-        str_list.append(str(item))
+    str_list = [str(item) for item in extract_params(params)]
     str_list.sort()
-    return (secret + "".join(str_list)).encode('utf-8')
+    return (secret + ''.join(str_list)).encode('utf-8')
 
 def get_signature_hash(params, secret):
     """
@@ -49,9 +47,6 @@ class SailthruClient(object):
     """
     This class makes HTTP Request to Sailthru API server
     Response from server depends on the format being queried
-    If 'json' format is requested, client will recieve JSON object
-    XML format is also available but XML response have not been tested thoroughly
-    https://github.com/sailthru/sailthru-python-client
 
     Usage:
         from sailthru import SailthruClient
@@ -63,7 +58,7 @@ class SailthruClient(object):
     def __init__(self, api_key, secret, api_url=None):
         self.api_key = api_key
         self.secret = secret
-        self.api_url = api_url if api_url is not None else 'https://api.sailthru.com'
+        self.api_url = api_url if api_url else 'https://api.sailthru.com'
 
     def send(self, template, email, _vars=None, options=None, schedule_time=None, limit=None):
         """
@@ -78,11 +73,10 @@ class SailthruClient(object):
         """
         _vars = _vars or {}
         options = options or {}
-        data = {}
-        data['template'] = template
-        data['email'] = email
-        data['vars'] = _vars
-        data['options'] = options.copy()
+        data = {'template': template,
+                'email': email,
+                'vars': _vars,
+                'options': options.copy()}
         if limit:
             data['limit'] = limit.copy()
         if schedule_time is not None:
@@ -102,12 +96,11 @@ class SailthruClient(object):
         _vars = _vars or {}
         evars = evars or {}
         options = options or {}
-        data = {}
-        data['template'] = template
-        data['email'] = ','.join(emails) if isinstance(emails, list) else emails
-        data['vars'] = _vars.copy()
-        data['evars'] = evars.copy()
-        data['options'] = options.copy()
+        data = {'template': template,
+                'email': ','.join(emails) if isinstance(emails, list) else emails,
+                'vars': _vars.copy(),
+                'evars': evars.copy(),
+                'options': options.copy()}
         return self.api_post('send', data)
 
     def get_send(self, send_id):
@@ -124,6 +117,7 @@ class SailthruClient(object):
 
     def get_email(self, email):
         """
+        DEPRECATED!
         get user email data
         http://docs.sailthru.com/api/email
         """
@@ -132,6 +126,7 @@ class SailthruClient(object):
 
     def set_email(self, email, _vars=None, lists=None, templates=None, verified=0, optout=None, send=None, send_vars=None):
         """
+        DEPRECATED!
         Update information about one of your users, including adding and removing the user from lists.
         http://docs.sailthru.com/api/email
         """
@@ -139,17 +134,17 @@ class SailthruClient(object):
         lists = lists or []
         templates = templates or []
         send_vars = send_vars or []
-        data = {}
-        data['email'] = email
-        data['vars'] = _vars.copy()
-        data['lists'] = lists
-        data['templates'] = templates
-        data['verified'] = int(verified)
+        data = {'email': email,
+                'vars':  _vars.copy(),
+                'lists': lists,
+                'templates': templates,
+                'verified': int(verified)}
         if optout is not None:
             data['optout'] = optout
         if send is not None:
             data['send'] = send
-        data['send_vars'] = send_vars
+        if send_vars:
+            data['send_vars'] = send_vars
         return self.api_post('email', data)
 
     def get_user(self, idvalue, options=None):
@@ -242,7 +237,8 @@ class SailthruClient(object):
         data['schedule_time'] = schedule_time
         return self.api_post('blast', data)
 
-    def update_blast(self, blast_id, name=None, list=None, schedule_time=None, from_name=None, from_email=None, subject=None, content_html=None, content_text=None, options=None):
+    def update_blast(self, blast_id, name=None, list=None, schedule_time=None, from_name=None, from_email=None,
+                     subject=None, content_html=None, content_text=None, options=None):
         """
         updates existing blast
         http://docs.sailthru.com/api/blast
@@ -309,9 +305,8 @@ class SailthruClient(object):
         """
         Cancel a scheduled Blast
         """
-        data = {}
-        data['blast_id'] = blast_id
-        data['schedule_time'] = ''
+        data = {'blast_id': blast_id,
+                'schedule_time': ''}
         return self.api_post('blast', data)
 
     def get_template(self, template_name):
@@ -333,10 +328,10 @@ class SailthruClient(object):
         data = {'template': template_name}
         return self.api_delete('template', data)
 
-    def save_template(self, template, template_fields=None):
-        template_fields = template_fields or {}
-        data = template_fields.copy()
-        data['template'] = template
+    def save_template(self, template, **template_fields):
+        data = {'template': template}
+        if template_fields:
+            data.update(template_fields)
         return self.api_post('template', data)
 
     def get_list(self, list_name, options=None):
@@ -352,8 +347,7 @@ class SailthruClient(object):
         """
         Get metadata for all lists
         """
-        data = {'list': ''}  # blank list
-        return self.api_get('list', data)
+        return self.api_get('list',  {})
 
     def save_list(self, list_name, emails):
         """
@@ -362,9 +356,8 @@ class SailthruClient(object):
         @param list: list name
         @param emails: List of email values or comma separated string
         """
-        data = {}
-        data['list'] = list_name
-        data['emails'] = ','.join(emails) if isinstance(emails, list) else emails
+        data = {'list': list_name,
+                'emails': ','.join(emails) if isinstance(emails, list) else emails}
         return self.api_post('list', data)
 
     def delete_list(self, list_name):
@@ -378,10 +371,9 @@ class SailthruClient(object):
         """
         Fetch email contacts from a user's address book on one of the major email websites. Currently supports AOL, Gmail, Hotmail, and Yahoo! Mail.
         """
-        data = {}
-        data['email'] = email
-        data['password'] = password
-        if include_name == True:
+        data = {'email': email,
+                'password': password}
+        if include_name:
             data['names'] = 1
         return self.api_post('contacts', data)
 
@@ -393,7 +385,7 @@ class SailthruClient(object):
                      spider=None, vars=None):
 
         """
-        Push a new piece of content to Sailthru, triggering any applicable alerts.
+        Push a new piece of content to Sailthru.
 
         Expected names for the `images` argument's map are "full" and "thumb"
         Expected format for `location` should be [longitude,latitude]
@@ -414,9 +406,8 @@ class SailthruClient(object):
 
         """
         vars = vars or {}
-        data = {}
-        data['title'] = title
-        data['url'] = url
+        data = {'title': title,
+                'url': url}
         if images is not None:
             data['images'] = images
         if date is not None:
@@ -474,7 +465,7 @@ class SailthruClient(object):
         data['email'] = email
         data['type'] = type
         data['template'] = template
-        if (type == 'weekly' or type == 'daily'):
+        if type in ['weekly', 'daily']:
             data['when'] = when
         return self.api_post('alert', data)
 
@@ -482,9 +473,8 @@ class SailthruClient(object):
         """
         delete user alert
         """
-        data = {}
-        data['email'] = email
-        data['alert_id'] = alert_id
+        data = {'email': email,
+                'alert_id': alert_id}
         return self.api_delete('alert', data)
 
     def purchase(self, email, items=None, incomplete=None, message_id=None, options=None, extid=None):
@@ -525,12 +515,11 @@ class SailthruClient(object):
         Retrieve information about your subscriber counts on a particular list, on a particular day.
         http://docs.sailthru.com/api/stat
         """
-        data = {}
+        data = {'stat': 'list'}
         if list is not None:
             data['list'] = list
         if date is not None:
             data['date'] = date
-        data['stat'] = 'list'
         return self._stats(data)
 
     def stats_blast(self, blast_id=None, start_date=None, end_date=None, options=None):
@@ -581,14 +570,11 @@ class SailthruClient(object):
         try:
             send_body = send_response.get_body()
             send_json = json.loads(send_body)
-            if not 'email' in send_body:
+            if 'email' not in send_body:
                 return False
             if send_json['email'] != post_params['email']:
                 return False
-
-            send_body = json.JSONEncoder().encode(send_body)
-
-        except json.decoder.JSONDecodeError:
+        except ValueError:
             return False
 
         return True
@@ -644,7 +630,7 @@ class SailthruClient(object):
             if not send_response.is_ok():
                 return False
             send_obj = send_response.get_body()
-            if not send_obj or not 'email' in send_obj:
+            if not send_obj or 'email' not in send_obj:
                 return False
 
         # for blasts
@@ -664,7 +650,7 @@ class SailthruClient(object):
         checks if post_params contain required keys
         """
         for key in required_keys:
-            if not key in post_params:
+            if key not in post_params:
                 return False
         return True
 
@@ -696,15 +682,21 @@ class SailthruClient(object):
         @param: binary_data_params: array of multipart keys
         """
         binary_data = {}
-        data_keys = data.keys()
-        for param in binary_data_param:
-            if param in data_keys:
-                binary_data[param] = open(data[param], 'r')
-                data = data.copy()
-                del data[param]
-        json_payload = self._prepare_json_payload(data)
+        data = data.copy()
 
-        return self._http_request(self.api_url+'/'+action, json_payload, "POST", binary_data)
+        try:
+            file_handles = []
+            for param in binary_data_param:
+                if param in data:
+                    binary_data[param] = file_handle = open(data[param], 'r')
+                    file_handles.append(file_handle)
+                    del data[param]
+            json_payload = self._prepare_json_payload(data)
+
+            return self._http_request(self.api_url+'/'+action, json_payload, "POST", binary_data)
+        finally:
+            for file_handle in file_handles:
+                file_handle.close()
 
     def api_delete(self, action, data):
         """
@@ -725,10 +717,9 @@ class SailthruClient(object):
         return sailthru_http_request(url, data, method, file_data)
 
     def _prepare_json_payload(self, data):
-        payload = {}
-        payload['api_key'] = self.api_key
-        payload['format'] = 'json'
-        payload['json'] = json.dumps(data)
+        payload = {'api_key': self.api_key,
+                   'format': 'json',
+                   'json': json.dumps(data)}
         signature = get_signature_hash(payload, self.secret)
         payload['sig'] = signature
         return payload

@@ -11,15 +11,15 @@ class SailthruResponse(object):
         self.json_error = None
 
         try:
-            self.json = response.json()
+            self.json = json.loads(response.content)
         except ValueError as e:
             self.json = None
             self.json_error = str(e)
 
     def is_ok(self):
-        return self.json and not set(["error", "errormsg"]) == set(self.json.keys())
+        return self.json and not set(["error", "errormsg"]) == set(self.json)
 
-    def get_body(self, as_dictionary = True):
+    def get_body(self, as_dictionary=True):
         if as_dictionary:
             return self.json
         else:
@@ -50,7 +50,7 @@ class SailthruResponseError(object):
         self.code = code
 
     def get_message(self):
-       return self.message
+        return self.message
 
     def get_error_code(self):
         return self.code
