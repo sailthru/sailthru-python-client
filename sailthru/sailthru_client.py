@@ -328,7 +328,7 @@ class SailthruClient(object):
         data = {'template': template_name}
         return self.api_delete('template', data)
 
-    def save_template(self, template, **template_fields):
+    def save_template(self, template, template_fields=None):
         data = {'template': template}
         if template_fields:
             data.update(template_fields)
