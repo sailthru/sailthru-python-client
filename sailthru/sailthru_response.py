@@ -44,6 +44,16 @@ class SailthruResponse(object):
 
         return SailthruResponseError(msg, code)
 
+    def get_rate_limit_headers(self):
+        headers = self.response.headers
+
+        if all(k in headers for k in ('X-Rate-Limit-Limit', 'X-Rate-Limit-Remaining', 'X-Rate-Limit-Reset')):
+            return { 'limit' : headers['X-Rate-Limit-Limit'],
+                     'remaining' : headers['X-Rate-Limit-Remaining'],
+                     'reset' : headers['X-Rate-Limit-Reset'] }
+
+        return None
+
 class SailthruResponseError(object):
     def __init__(self, message, code):
         self.message = message
