@@ -12,4 +12,8 @@
 
 2.2.2
 ====
-- Fixe for bug created in 2.2.1 on 'save_template' function which now accepts 'template_fields' as a parameter with default value 'None'.
+- Fix for bug created in 2.2.1 on 'save_template' function which now accepts 'template_fields' as a parameter with default value 'None'.
+
+2.2.3
+====
+- Fixed missing file parameter, for uploading a file using api POST request
