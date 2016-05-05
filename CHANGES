@@ -12,8 +12,12 @@
 
 2.2.2
 ====
-- Fix for bug created in 2.2.1 on 'save_template' function which now accepts 'template_fields' as a parameter with default value 'None'.
+- Fixed a bug created in 2.2.1 on 'save_template' function which now accepts 'template_fields' as a parameter with default value 'None'.
 
 2.2.3
 ====
 - Fixed missing file parameter, for uploading a file using api POST request
+
+2.3.0
+====
+- Added support to get Rate Limiting headers

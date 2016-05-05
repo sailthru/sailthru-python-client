@@ -144,6 +144,19 @@ class TestSailthruClient(unittest.TestCase):
         expected = True
         self.assertEqual(actual, expected)
 
+    def test_get_rate_limit_info_available(self):
+        user_get = { 'limit' : 100, 'remaining' : 50, 'reset' : 1459520925 }
+        user_post = { 'limit' : 40, 'remaining' : 15, 'reset' : 1459520925 }
+        email_get = { 'limit' : 100, 'remaining' : 30, 'reset' : 1459520925 }
+
+        self.client.last_rate_limit_info = {
+                                               'user' :  { 'GET':  user_get, 'POST': user_post },
+                                               'email' : { 'GET':  email_get }
+                                           }
+        self.assertEqual(user_get, self.client.get_last_rate_limit_info('user', 'GET'))
+        self.assertEqual(user_post, self.client.get_last_rate_limit_info('user', 'POST'))
+        self.assertEqual(email_get, self.client.get_last_rate_limit_info('email', 'get'))
+        self.assertIsNone(self.client.get_last_rate_limit_info('email', 'POST'))
 
 def suite():
     suite = unittest.TestSuite()

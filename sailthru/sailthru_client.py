@@ -59,6 +59,7 @@ class SailthruClient(object):
         self.api_key = api_key
         self.secret = secret
         self.api_url = api_url if api_url else 'https://api.sailthru.com'
+        self.last_rate_limit_info = {}
 
     def send(self, template, email, _vars=None, options=None, schedule_time=None, limit=None):
         """
@@ -693,7 +694,7 @@ class SailthruClient(object):
                     del data[param]
             json_payload = self._prepare_json_payload(data)
 
-            return self._http_request(self.api_url+'/'+action, json_payload, "POST", binary_data)
+            return self._http_request(action, json_payload, "POST", binary_data)
         finally:
             for file_handle in file_handles:
                 file_handle.close()
@@ -715,11 +716,17 @@ class SailthruClient(object):
         else:
             file_data = None
 
-        return self._http_request(self.api_url+'/'+action, self._prepare_json_payload(data), request_type, file_data)
+        return self._http_request(action, self._prepare_json_payload(data), request_type, file_data)
 
-    def _http_request(self, url, data, method, file_data=None):
+    def _http_request(self, action, data, method, file_data=None):
+        url = self.api_url + '/' + action
         file_data = file_data or {}
-        return sailthru_http_request(url, data, method, file_data)
+        response = sailthru_http_request(url, data, method, file_data)
+        if (action in self.last_rate_limit_info):
+            self.last_rate_limit_info[action][method] = response.get_rate_limit_headers()
+        else:
+            self.last_rate_limit_info[action] = { method : response.get_rate_limit_headers() }
+        return response
 
     def _prepare_json_payload(self, data):
         payload = {'api_key': self.api_key,
@@ -728,3 +735,16 @@ class SailthruClient(object):
         signature = get_signature_hash(payload, self.secret)
         payload['sig'] = signature
         return payload
+
+    def get_last_rate_limit_info(self, action, method):
+        """
+        Get rate limit information for last API call
+        :param action: API endpoint
+        :param method: Http method, GET, POST or DELETE
+        :return: dict|None
+        """
+        method = method.upper()
+        if (action in self.last_rate_limit_info and method in self.last_rate_limit_info[action]):
+            return self.last_rate_limit_info[action][method]
+
+        return None
