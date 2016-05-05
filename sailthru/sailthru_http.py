@@ -36,7 +36,7 @@ def sailthru_http_request(url, data, method, file_data=None):
     params = data if method != 'POST' else None
 
     try:
-        headers = {'User-Agent': 'Sailthru API Python Client %s; Python Version: %s' % ('2.2.1', platform.python_version())}
+        headers = {'User-Agent': 'Sailthru API Python Client %s; Python Version: %s' % ('2.3.0', platform.python_version())}
         response = requests.request(method, url, params=params, data=data, files=file_data, headers=headers, timeout=10)
         return SailthruResponse(response)
     except requests.HTTPError as e:
