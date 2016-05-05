@@ -486,7 +486,7 @@ class SailthruClient(object):
         @param items: list of item dictionary with keys: id, title, price, qty, and url
         @param message_id: message_id string
         @param extid: external ID to track purchases
-        @param options: other options that can be set as per the API documentation 
+        @param options: other options that can be set as per the API documentation
         """
         items = items or {}
         options = options or {}
@@ -504,11 +504,11 @@ class SailthruClient(object):
     def get_purchase(self, purchase_id, purchase_key='sid'):
         """
         Retrieve information about a purchase using the system's unique ID or a client's ID
-        @param id_: a string that represents a unique_id or an extid. 
-        @param key: a string that is either 'sid' or 'extid'. 
+        @param id_: a string that represents a unique_id or an extid.
+        @param key: a string that is either 'sid' or 'extid'.
         """
         data = {'purchase_id': purchase_id,
-                'purchase_key': purchase_key}           
+                'purchase_key': purchase_key}
         return self.api_get('purchase', data)
 
     def stats_list(self, list=None, date=None):
@@ -711,7 +711,12 @@ class SailthruClient(object):
         """
         Make Request to Sailthru API with given data and api key, format and signature hash
         """
-        return self._http_request(action, self._prepare_json_payload(data), request_type)
+        if 'file' in data:
+            file_data = {'file': open(data['file'], 'rb')}
+        else:
+            file_data = None
+
+        return self._http_request(action, self._prepare_json_payload(data), request_type, file_data)
 
     def _http_request(self, action, data, method, file_data=None):
         url = self.api_url + '/' + action
