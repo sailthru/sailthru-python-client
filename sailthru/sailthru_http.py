@@ -33,7 +33,7 @@ def sailthru_http_request(url, data, method, file_data=None):
     """
     data = flatten_nested_hash(data)
     method = method.upper()
-    params = data if method != 'POST' else None
+    params, data = (None, data) if method == 'POST' else (data, None)
 
     try:
         headers = {'User-Agent': 'Sailthru API Python Client %s; Python Version: %s' % ('2.3.0', platform.python_version())}
