@@ -48,9 +48,9 @@ class SailthruResponse(object):
         headers = self.response.headers
 
         if all(k in headers for k in ('X-Rate-Limit-Limit', 'X-Rate-Limit-Remaining', 'X-Rate-Limit-Reset')):
-            return { 'limit' : headers['X-Rate-Limit-Limit'],
-                     'remaining' : headers['X-Rate-Limit-Remaining'],
-                     'reset' : headers['X-Rate-Limit-Reset'] }
+            return { 'limit' : int(headers['X-Rate-Limit-Limit']),
+                     'remaining' : int(headers['X-Rate-Limit-Remaining']),
+                     'reset' : int(headers['X-Rate-Limit-Reset']) }
 
         return None
 
