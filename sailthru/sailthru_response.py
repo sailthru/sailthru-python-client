@@ -11,7 +11,7 @@ class SailthruResponse(object):
         self.json_error = None
 
         try:
-            self.json = json.loads(response.content)
+            self.json = json.loads(response.content.decode())
         except ValueError as e:
             self.json = None
             self.json_error = str(e)
@@ -23,7 +23,7 @@ class SailthruResponse(object):
         if as_dictionary:
             return self.json
         else:
-            return self.response.content
+            return self.response.content.decode()
 
     def get_response(self):
         return self.response
