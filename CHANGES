@@ -25,3 +25,9 @@
 2.3.1
 ====
 - Misc bug fixes
+
+2.3.2
+====
+- Adding schedule_time parameter support for multi_send fix
+- API Rate Limit values are now Integers
+- Adding stats_send helper function to retrieve information about a particular transactional template
