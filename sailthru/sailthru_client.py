@@ -84,7 +84,7 @@ class SailthruClient(object):
             data['schedule_time'] = schedule_time
         return self.api_post('send', data)
 
-    def multi_send(self, template, emails, _vars=None, evars=None, options=None):
+    def multi_send(self, template, emails, _vars=None, evars=None, schedule_time=None, options=None):
         """
         Remotely send an email template to multiple email addresses.
         http://docs.sailthru.com/api/send
@@ -102,6 +102,8 @@ class SailthruClient(object):
                 'vars': _vars.copy(),
                 'evars': evars.copy(),
                 'options': options.copy()}
+        if schedule_time is not None:
+            data['schedule_time'] = schedule_time
         return self.api_post('send', data)
 
     def get_send(self, send_id):
