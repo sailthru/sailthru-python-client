@@ -21,3 +21,7 @@
 2.3.0
 ====
 - Added support to get Rate Limiting headers
+
+2.3.1
+====
+- Misc bug fixes
