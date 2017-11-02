@@ -44,11 +44,12 @@ def sailthru_http_request(url, data, method, file_data=None,
             # not retry on read errors since for POST requests that
             # happens after the POST has finished, and POSTs are not
             # necessarily safe to re-do.
-            retry = requests.urllib3.Retry(retries,
-                                           read=0,
-                                           method_whitelist=False,
-                                           status_forcelist={500, 502, 503, 504},
-                                           raise_on_status=False)
+            retry = requests.packages.urllib3.Retry(
+                retries,
+                read=0,
+                method_whitelist=False,
+                status_forcelist={500, 502, 503, 504},
+                raise_on_status=False)
             session.mount(url, requests.adapters.HTTPAdapter(max_retries=retry))
         else:
             session = requests
