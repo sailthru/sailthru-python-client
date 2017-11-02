@@ -55,10 +55,21 @@ class SailthruClient(object):
         client = SailthruCLient(api_key, api_secret)
     """
 
-    def __init__(self, api_key, secret, api_url=None):
+    def __init__(self, api_key, secret,
+                 api_url=None, timeout=None, retries=None):
+        """Create a new client.
+
+        @param api_key: the key used to identify this app to sailthru
+        @param secret: the secret used to authenticate this user with sailthru
+        @param api_url: the protocol+host to send API requests to, or None for the default
+        @param timeout: how long to wait for HTTP requests, or None for the default
+        @param retries: how many times to retry on transient HTTP errors, or None for the default.
+        """
         self.api_key = api_key
         self.secret = secret
-        self.api_url = api_url if api_url else 'https://api.sailthru.com'
+        self.api_url = api_url if api_url is not None else 'https://api.sailthru.com'
+        self.timeout = timeout if timeout is not None else 10
+        self.retries = retries if retries is not None else 0
         self.last_rate_limit_info = {}
 
     def send(self, template, email, _vars=None, options=None, schedule_time=None, limit=None):
@@ -762,7 +773,8 @@ class SailthruClient(object):
     def _http_request(self, action, data, method, file_data=None):
         url = self.api_url + '/' + action
         file_data = file_data or {}
-        response = sailthru_http_request(url, data, method, file_data)
+        response = sailthru_http_request(url, data, method, file_data,
+                                         timeout=self.timeout, retries=self.retries)
         if (action in self.last_rate_limit_info):
             self.last_rate_limit_info[action][method] = response.get_rate_limit_headers()
         else:

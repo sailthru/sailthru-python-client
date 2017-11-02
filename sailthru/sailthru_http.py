@@ -27,7 +27,8 @@ def flatten_nested_hash(hash_table):
         return f
     return flatten(hash_table, False)
 
-def sailthru_http_request(url, data, method, file_data=None):
+def sailthru_http_request(url, data, method, file_data=None,
+                          timeout=10, retries=0):
     """
     Perform an HTTP GET / POST / DELETE request
     """
@@ -37,7 +38,27 @@ def sailthru_http_request(url, data, method, file_data=None):
 
     try:
         headers = {'User-Agent': 'Sailthru API Python Client %s; Python Version: %s' % ('2.3.3', platform.python_version())}
-        response = requests.request(method, url, params=params, data=data, files=file_data, headers=headers, timeout=10)
+        if retries > 0:
+            session = requests.Session()
+            # We retry on connection errors and all 5xx errors.  We do
+            # not retry on read errors since for POST requests that
+            # happens after the POST has finished, and POSTs are not
+            # necessarily safe to re-do.
+            retry = requests.packages.urllib3.Retry(
+                retries,
+                read=0,
+                method_whitelist=False,
+                status_forcelist={500, 502, 503, 504},
+                raise_on_status=False)
+            session.mount(url, requests.adapters.HTTPAdapter(max_retries=retry))
+        else:
+            session = requests
+        response = session.request(method, url,
+                                   params=params,
+                                   data=data,
+                                   files=file_data,
+                                   headers=headers,
+                                   timeout=timeout)
         return SailthruResponse(response)
     except requests.HTTPError as e:
         raise SailthruClientError(str(e))
