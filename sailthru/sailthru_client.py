@@ -52,7 +52,7 @@ class SailthruClient(object):
         from sailthru import SailthruClient
         api_key = "your-api-key"
         api_secret = "api-secret"
-        client = SailthruCLient(api_key, api_secret)
+        client = SailthruClient(api_key, api_secret)
     """
 
     def __init__(self, api_key, secret, api_url=None):
@@ -513,7 +513,7 @@ class SailthruClient(object):
                 'purchase_key': purchase_key}
         return self.api_get('purchase', data)
 
-    def stats_list(self, list=None, date=None):
+    def stats_list(self, list=None, date=None, headers=None):
         """
         Retrieve information about your subscriber counts on a particular list, on a particular day.
         http://docs.sailthru.com/api/stat
@@ -523,7 +523,7 @@ class SailthruClient(object):
             data['list'] = list
         if date is not None:
             data['date'] = date
-        return self._stats(data)
+        return self._stats(data, headers)
 
     def stats_blast(self, blast_id=None, start_date=None, end_date=None, options=None):
         """
@@ -556,11 +556,11 @@ class SailthruClient(object):
         data['stat'] = 'send'
         return self._stats(data)
 
-    def _stats(self, data):
+    def _stats(self, data, headers=None):
         """
         Make Stats API Request
         """
-        return self.api_get('stats', data)
+        return self.api_get('stats', data, headers)
 
     def receive_verify_post(self, post_params):
         """
@@ -696,13 +696,14 @@ class SailthruClient(object):
                 return False
         return True
 
-    def api_get(self, action, data):
+    def api_get(self, action, data, headers=None):
         """
         Perform an HTTP GET request, using the shared-secret auth hash.
         @param action: API action call
         @param data: dictionary values
         """
-        return self._api_request(action, data, 'GET')
+        #{'action': action, 'data': data, 'request_type': 'GET', 'headers': headers}
+        return self._api_request(action, data, 'GET', headers)
 
     def api_post(self, action, data, binary_data_param=None):
         """
@@ -718,7 +719,7 @@ class SailthruClient(object):
 
     def api_post_multipart(self, action, data, binary_data_param):
         """
-         Perform an HTTP Multipart POST request, using the shared-secret auth hash.
+        Perform an HTTP Multipart POST request, using the shared-secret auth hash.
         @param action: API action call
         @param data: dictionary values
         @param: binary_data_params: array of multipart keys
@@ -748,7 +749,7 @@ class SailthruClient(object):
         """
         return self._api_request(action, data, 'DELETE')
 
-    def _api_request(self, action, data, request_type):
+    def _api_request(self, action, data, request_type, headers=None):
         """
         Make Request to Sailthru API with given data and api key, format and signature hash
         """
@@ -757,12 +758,12 @@ class SailthruClient(object):
         else:
             file_data = None
 
-        return self._http_request(action, self._prepare_json_payload(data), request_type, file_data)
+        return self._http_request(action, self._prepare_json_payload(data), request_type, file_data, headers)
 
-    def _http_request(self, action, data, method, file_data=None):
+    def _http_request(self, action, data, method, file_data=None, headers=None):
         url = self.api_url + '/' + action
         file_data = file_data or {}
-        response = sailthru_http_request(url, data, method, file_data)
+        response = sailthru_http_request(url, data, method, file_data, headers)
         if (action in self.last_rate_limit_info):
             self.last_rate_limit_info[action][method] = response.get_rate_limit_headers()
         else:
