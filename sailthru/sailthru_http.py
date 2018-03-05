@@ -41,7 +41,6 @@ def sailthru_http_request(url, data, method, file_data=None, headers=None):
     else:
         headers = sailthru_headers
     try:
-        print(headers)
         response = requests.request(method, url, params=params, data=data, files=file_data, headers=headers, timeout=10)
         return SailthruResponse(response)
     except requests.HTTPError as e:
