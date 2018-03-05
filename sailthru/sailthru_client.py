@@ -702,7 +702,6 @@ class SailthruClient(object):
         @param action: API action call
         @param data: dictionary values
         """
-        #{'action': action, 'data': data, 'request_type': 'GET', 'headers': headers}
         return self._api_request(action, data, 'GET', headers)
 
     def api_post(self, action, data, binary_data_param=None):
