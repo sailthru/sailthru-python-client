@@ -35,3 +35,7 @@
 2.3.3
 ====
 - Adding update postback
+
+2.3.4
+===
+- Add headers param to stats_list method
