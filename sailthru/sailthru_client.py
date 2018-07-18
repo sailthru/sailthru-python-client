@@ -55,7 +55,7 @@ class SailthruClient(object):
         client = SailthruClient(api_key, api_secret)
     """
 
-    def __init__(self, api_key, secret, api_url=None, request_timeout=None):
+    def __init__(self, api_key, secret, api_url=None, request_timeout=10):
         self.api_key = api_key
         self.secret = secret
         self.api_url = api_url if api_url else 'https://api.sailthru.com'
