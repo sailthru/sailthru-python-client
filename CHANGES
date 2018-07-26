@@ -39,3 +39,7 @@
 2.3.4
 ===
 - Add headers param to stats_list method
+
+2.3.5
+===
+- Add request timeout argument
