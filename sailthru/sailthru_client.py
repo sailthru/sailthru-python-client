@@ -587,7 +587,7 @@ class SailthruClient(object):
         send_response = self.get_send(post_params['send_id'])
 
         try:
-            send_body = send_response.get_body()
+            send_body = send_response.get_body(as_dictionary=False)
             send_json = json.loads(send_body)
             if 'email' not in send_body:
                 return False
