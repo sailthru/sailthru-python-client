@@ -423,7 +423,7 @@ class SailthruClient(object):
             data['location'] = date
         if price is not None:
             data['price'] = price
-        if data['inventory'] is not None:
+        if inventory is not None:
             data['inventory'] = inventory
         if description is not None:
             data['description'] = description
