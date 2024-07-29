@@ -386,7 +386,7 @@ class SailthruClient(object):
                      description=None, location=None, price=None,
                      tags=None,
                      author=None, site_name=None,
-                     spider=None, vars=None):
+                     spider=None, vars=None, inventory=None):
 
         """
         Push a new piece of content to Sailthru.
@@ -407,6 +407,7 @@ class SailthruClient(object):
         @param site_name: site name for the content
         @param spider: truthy value to force respidering content
         @param vars: replaceable vars dictionary
+        @param inventory: integer value indicating current item inventory
 
         """
         vars = vars or {}
@@ -422,6 +423,8 @@ class SailthruClient(object):
             data['location'] = date
         if price is not None:
             data['price'] = price
+        if inventory is not None:
+            data['inventory'] = inventory
         if description is not None:
             data['description'] = description
         if site_name is not None:
