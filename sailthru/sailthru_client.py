@@ -31,7 +31,7 @@ def get_signature_string(params, secret):
     """
     str_list = [str(item) for item in extract_params(params)]
     str_list.sort()
-    return (secret + ''.join(str_list)).encode('utf-8')
+    return secret + ''.join(str_list)
 
 def get_signature_hash(params, secret):
     """
@@ -39,7 +39,7 @@ def get_signature_hash(params, secret):
     @param params: dictionary values to generate signature hash
     @param sercret: secret string
     """
-    return hashlib.md5(get_signature_string(params, secret)).hexdigest()
+    return hashlib.md5(get_signature_string(params, secret).encode('utf-8')).hexdigest()
 
 
 class SailthruClient(object):
@@ -589,14 +589,10 @@ class SailthruClient(object):
 
         send_response = self.get_send(post_params['send_id'])
 
-        try:
-            send_body = send_response.get_body()
-            send_json = json.loads(send_body)
-            if 'email' not in send_body:
-                return False
-            if send_json['email'] != post_params['email']:
-                return False
-        except ValueError:
+        send_json = send_response.get_body()
+        if not send_json or 'email' not in send_json:
+            return False
+        if send_json['email'] != post_params['email']:
             return False
 
         return True
