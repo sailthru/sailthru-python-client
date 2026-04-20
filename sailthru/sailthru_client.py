@@ -590,9 +590,9 @@ class SailthruClient(object):
         send_response = self.get_send(post_params['send_id'])
 
         send_json = send_response.get_body()
-        if not send_json or 'email' not in send_json:
+        if not isinstance(send_json, dict):
             return False
-        if send_json['email'] != post_params['email']:
+        if send_json.get('email') != post_params['email']:
             return False
 
         return True
