@@ -64,7 +64,7 @@ class TestSailthruClient(unittest.TestCase):
 
     def test_receive_verify_post(self):
         mock_http_request = MagicMock()
-        mock_http_request.return_value.get_body.return_value = '{"email":"menglander@sailthru.com"}'
+        mock_http_request.return_value.get_body.return_value = {"email": "menglander@sailthru.com"}
 
         self.client._http_request = mock_http_request
 
@@ -126,7 +126,7 @@ class TestSailthruClient(unittest.TestCase):
 
     def test_hardbounce_valid_json(self):
         mock_http_request = MagicMock()
-        mock_http_request.return_value.get_body.return_value = '{"email": "menglander@sailthru.com"}'
+        mock_http_request.return_value.get_body.return_value = {"email": "menglander@sailthru.com"}
 
         self.client._http_request = mock_http_request
 
