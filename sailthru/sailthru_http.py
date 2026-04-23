@@ -34,7 +34,7 @@ def sailthru_http_request(url, data, method, file_data=None, headers=None, reque
     data = flatten_nested_hash(data)
     method = method.upper()
     params, data = (None, data) if method == 'POST' else (data, None)
-    sailthru_headers = {'User-Agent': 'Sailthru API Python Client %s; Python Version: %s' % ('2.3.6', platform.python_version())}
+    sailthru_headers = {'User-Agent': 'Sailthru API Python Client %s; Python Version: %s' % ('2.4.1', platform.python_version())}
     if headers and isinstance(headers, dict):
         for key, value in sailthru_headers.items():
             headers[key] = value

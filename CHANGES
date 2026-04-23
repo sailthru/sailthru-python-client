@@ -44,7 +44,11 @@
 ===
 - Add request timeout argument
 
-2.3.6
+2.4.0
+===
+- Add inventory to push_content
+
+2.4.1
 ===
 - Fix Python 3 bytes/str incompatibility: use response.text instead of response.content so simplejson (required dependency) receives a str
 - Fix receive_verify_post to use the dict returned by get_body() directly instead of calling json.loads on it again
