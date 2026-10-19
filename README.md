@@ -11,18 +11,28 @@ Python binding for [Sailthru API](http://getstarted.sailthru.com/api) based on [
 
 It will make requests in `JSON` format.
 
-Supports Python 2.6, 2.7, 3.3+
+CI tests Python 3.11, 3.12, 3.13, 3.14, and the latest stable Python 3 release.
+These are tested compatibility targets; other runtimes are outside CI coverage.
 
-### Installation (Tested with Python 2.7.x)
+### Installation
 
 Installing with [pip](http://www.pip-installer.org/):
 
     pip install sailthru-client
     
 ### Running tests
-Install tox and then type:
 
-    tox
+```bash
+python -m pip install 'tox>=4.11,<5'
+python -m tox -e py
+```
+
+This runs unit tests and installs the built wheel and source distribution into
+separate temporary consumers for local requests with dummy credentials. It does
+not publish. To retain the validated artifacts, use `python -m tox -e py -- --outdir dist`.
+
+CI runs on PRs, pushes to `master`, weekly, and manual runs. The `3.x` matrix
+entry follows the latest stable Python 3 release.
 
 ### API Rate Limiting
 
