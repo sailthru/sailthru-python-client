@@ -2,7 +2,7 @@
 """
 Tests for sailthru_client
 """
-from mock import MagicMock
+from unittest.mock import MagicMock
 import unittest
 import sys
 
