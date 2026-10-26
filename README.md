@@ -11,7 +11,7 @@ Python binding for [Sailthru API](http://getstarted.sailthru.com/api) based on [
 
 It will make requests in `JSON` format.
 
-CI tests Python 3.11, 3.12, 3.13, 3.14, and the latest stable Python 3 release.
+CI discovers every stable Python release line from 3.11 through the latest release.
 These are tested compatibility targets; other runtimes are outside CI coverage.
 
 ### Installation
@@ -31,8 +31,7 @@ This runs unit tests and installs the built wheel and source distribution into
 separate temporary consumers for local requests with dummy credentials. It does
 not publish. To retain the validated artifacts, use `python -m tox -e py -- --outdir dist`.
 
-CI runs on PRs, pushes to `master`, weekly, and manual runs. The `3.x` matrix
-entry follows the latest stable Python 3 release.
+CI runs on PRs, pushes to `master`, weekly, and manual runs.
 
 ### API Rate Limiting
 
